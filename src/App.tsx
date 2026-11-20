@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
+import empayLogo from "./assets/empay-logo.png";
 import { InteractiveDotGrid } from "./components/InteractiveDotGrid";
 import { SplitText } from "./components/SplitText";
 import { ChatBot } from "./components/ChatBot";
@@ -605,7 +606,7 @@ export function App() {
         <div className={`empay-pre ${preLeaving ? "is-leaving" : ""}`} id="empay-pre" aria-hidden="true">
           <div className="empay-pre__inner">
             <div className="empay-pre__brand-lockup">
-              <img src="/assets/empay-logo.png" alt="emPay Software" className="empay-pre__logo-img" />
+              <img src={empayLogo} alt="emPay Software" className="empay-pre__logo-img" />
             </div>
             <div className="empay-pre__meter">
               <div className="empay-pre__bar">
@@ -645,7 +646,7 @@ export function App() {
               scrollToSection("#hero");
             }}
           >
-            <img src="/assets/empay-logo.png" alt="emPay Software" className="brand-logo__img" />
+            <img src={empayLogo} alt="emPay Software" className="brand-logo__img" />
           </a>
 
           <nav className="header-actions" aria-label="Primary actions">
@@ -2100,7 +2101,7 @@ export function App() {
               </div>
 
               <div className="footer-brand-badge">
-                <img src="/assets/empay-logo.png" alt="emPay Software" className="footer-logo-img" />
+                <img src={empayLogo} alt="emPay Software" className="footer-logo-img" />
               </div>
             </div>
 
