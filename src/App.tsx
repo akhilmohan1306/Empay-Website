@@ -505,6 +505,14 @@ export function App() {
     };
   }, [prefersReducedMotion]);
 
+  // Menu drawer close handler with deferred depth reset
+  const closeMenu = () => {
+    setMenuOpen(false);
+    window.setTimeout(() => {
+      setMenuDepth(0);
+    }, 450);
+  };
+
   // Menu drawer class sync + Escape handling
   useEffect(() => {
     document.documentElement.classList.toggle("menu-open", menuOpen);
@@ -515,8 +523,7 @@ export function App() {
     }
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && menuOpen) {
-        setMenuOpen(false);
-        setMenuDepth(0);
+        closeMenu();
       }
     };
     window.addEventListener("keydown", onKeyDown);
@@ -571,8 +578,7 @@ export function App() {
     };
 
     if (menuOpen) {
-      setMenuOpen(false);
-      setMenuDepth(0);
+      closeMenu();
       window.setTimeout(run, 380);
     } else {
       run();
@@ -705,10 +711,7 @@ export function App() {
       {/* Click-outside backdrop for menu */}
       <div
         className={`menu-backdrop ${menuOpen ? "is-active" : ""}`}
-        onClick={() => {
-          setMenuOpen(false);
-          setMenuDepth(0);
-        }}
+        onClick={closeMenu}
         aria-hidden="true"
       />
 
@@ -745,10 +748,7 @@ export function App() {
             id="menu-close"
             data-magnetic
             aria-label="Close navigation menu"
-            onClick={() => {
-              setMenuOpen(false);
-              setMenuDepth(0);
-            }}
+            onClick={closeMenu}
           >
             <span>Close</span>
             <span className="menu-pill__x" aria-hidden="true">
@@ -758,166 +758,168 @@ export function App() {
         </div>
 
         <div className="stacked-menu__stage">
-          <div className="stacked-menu__col stacked-menu__col--root">
-            <span className="eyebrow eyebrow--orange">NAVIGATION</span>
-            <ul className="stacked-menu__list">
-              <li>
-                <a
-                  href="#hero"
-                  className="stacked-menu__link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToSection("#hero");
-                  }}
-                >
-                  <span className="stacked-menu__title">Home</span>
-                  <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#about"
-                  className="stacked-menu__link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToSection("#about");
-                  }}
-                >
-                  <span className="stacked-menu__title">About</span>
-                  <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#service"
-                  className="stacked-menu__link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToSection("#service");
-                  }}
-                >
-                  <span className="stacked-menu__title">Services</span>
-                  <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
-                </a>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  className="stacked-menu__link stacked-menu__link--sub"
-                  id="open-products-sub"
-                  onClick={() => setMenuDepth(1)}
-                >
-                  <span className="stacked-menu__title">Products</span>
-                  <span className="stacked-menu__badge stacked-menu__badge--outline">→</span>
-                </button>
-              </li>
-              <li>
-                <a
-                  href="#portfolio"
-                  className="stacked-menu__link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToSection("#portfolio");
-                  }}
-                >
-                  <span className="stacked-menu__title">Clients</span>
-                  <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#career"
-                  className="stacked-menu__link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToSection("#career");
-                  }}
-                >
-                  <span className="stacked-menu__title">Careers</span>
-                  <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
-                </a>
-              </li>
-              <li>
+          <div className="stacked-menu__track">
+            <div className="stacked-menu__col stacked-menu__col--root" aria-hidden={menuDepth !== 0}>
+              <span className="eyebrow eyebrow--orange">NAVIGATION</span>
+              <ul className="stacked-menu__list">
+                <li>
+                  <a
+                    href="#hero"
+                    className="stacked-menu__link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection("#hero");
+                    }}
+                  >
+                    <span className="stacked-menu__title">Home</span>
+                    <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#about"
+                    className="stacked-menu__link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection("#about");
+                    }}
+                  >
+                    <span className="stacked-menu__title">About</span>
+                    <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#service"
+                    className="stacked-menu__link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection("#service");
+                    }}
+                  >
+                    <span className="stacked-menu__title">Services</span>
+                    <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
+                  </a>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className="stacked-menu__link stacked-menu__link--sub"
+                    id="open-products-sub"
+                    onClick={() => setMenuDepth(1)}
+                  >
+                    <span className="stacked-menu__title">Products</span>
+                    <span className="stacked-menu__badge stacked-menu__badge--outline">→</span>
+                  </button>
+                </li>
+                <li>
+                  <a
+                    href="#portfolio"
+                    className="stacked-menu__link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection("#portfolio");
+                    }}
+                  >
+                    <span className="stacked-menu__title">Clients</span>
+                    <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#career"
+                    className="stacked-menu__link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection("#career");
+                    }}
+                  >
+                    <span className="stacked-menu__title">Careers</span>
+                    <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#footer"
+                    className="stacked-menu__link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection("#footer");
+                    }}
+                  >
+                    <span className="stacked-menu__title">Contact</span>
+                    <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
+                  </a>
+                </li>
+              </ul>
+
+              <div className="stacked-menu__card">
+                <div className="stacked-menu__card-meta">
+                  <span className="status-dot" />
+                  <span>SmartCity, Kochi · Est. 2008</span>
+                </div>
+                <p>Connect with Empay Software Solutions Private Limited at solutions@empaysoft.com or 0484 486 5189.</p>
                 <a
                   href="#footer"
-                  className="stacked-menu__link"
+                  className="pill-btn pill-btn--orange pill-btn--sm"
                   onClick={(e) => {
                     e.preventDefault();
                     scrollToSection("#footer");
                   }}
                 >
-                  <span className="stacked-menu__title">Contact</span>
-                  <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
+                  <span className="pill-btn__content">Contact Us ↗</span>
                 </a>
-              </li>
-            </ul>
-
-            <div className="stacked-menu__card">
-              <div className="stacked-menu__card-meta">
-                <span className="status-dot" />
-                <span>SmartCity, Kochi · Est. 2008</span>
               </div>
-              <p>Connect with Empay Software Solutions Private Limited at solutions@empaysoft.com or 0484 486 5189.</p>
-              <a
-                href="#footer"
-                className="pill-btn pill-btn--orange pill-btn--sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection("#footer");
-                }}
-              >
-                <span className="pill-btn__content">Contact Us ↗</span>
-              </a>
             </div>
-          </div>
 
-          <div className="stacked-menu__col stacked-menu__col--sub" aria-hidden={menuDepth === 0}>
-            <span className="eyebrow eyebrow--orange">IT&apos;S WHAT WE DO</span>
-            <ul className="stacked-menu__list">
-              <li>
-                <a
-                  href="#product-mars"
-                  className="stacked-menu__link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToSection("#product-mars");
-                  }}
-                >
-                  <div>
-                    <span className="stacked-menu__title">MARS</span>
-                    <small>Merchant Acquiring &amp; Reconciliation System</small>
-                  </div>
-                  <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#product-reconplus"
-                  className="stacked-menu__link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToSection("#product-reconplus");
-                  }}
-                >
-                  <div>
-                    <span className="stacked-menu__title">ReconPlus</span>
-                    <small>Card Transaction Reconciliation System</small>
-                  </div>
-                  <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
-                </a>
-              </li>
-            </ul>
+            <div className="stacked-menu__col stacked-menu__col--sub" aria-hidden={menuDepth === 0}>
+              <span className="eyebrow eyebrow--orange">IT&apos;S WHAT WE DO</span>
+              <ul className="stacked-menu__list">
+                <li>
+                  <a
+                    href="#product-mars"
+                    className="stacked-menu__link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection("#product-mars");
+                    }}
+                  >
+                    <div>
+                      <span className="stacked-menu__title">MARS</span>
+                      <small>Merchant Acquiring &amp; Reconciliation System</small>
+                    </div>
+                    <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#product-reconplus"
+                    className="stacked-menu__link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection("#product-reconplus");
+                    }}
+                  >
+                    <div>
+                      <span className="stacked-menu__title">ReconPlus</span>
+                      <small>Card Transaction Reconciliation System</small>
+                    </div>
+                    <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
+                  </a>
+                </li>
+              </ul>
 
-            <div className="stacked-menu__wireframe" aria-hidden="true">
-              <svg viewBox="0 0 360 130" fill="none">
-                <rect x="1" y="1" width="358" height="128" rx="14" stroke="rgba(255,85,0,0.35)" strokeDasharray="4 4" />
-                <path d="M24 92 C84 92, 92 38, 160 38 C228 38, 240 82, 332 42" stroke="#FF5500" strokeWidth="2" />
-                <circle cx="160" cy="38" r="5" fill="#FF5500" />
-                <circle cx="332" cy="42" r="5" fill="#FFFFFF" />
-                <text x="24" y="28" fill="#FF5500" fontFamily="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fontSize="11">
-                  EMPAY_UNIFIED_RAIL // 99.998% SLA
-                </text>
-              </svg>
+              <div className="stacked-menu__wireframe" aria-hidden="true">
+                <svg viewBox="0 0 360 130" fill="none">
+                  <rect x="1" y="1" width="358" height="128" rx="14" stroke="rgba(255,85,0,0.35)" strokeDasharray="4 4" />
+                  <path d="M24 92 C84 92, 92 38, 160 38 C228 38, 240 82, 332 42" stroke="#FF5500" strokeWidth="2" />
+                  <circle cx="160" cy="38" r="5" fill="#FF5500" />
+                  <circle cx="332" cy="42" r="5" fill="#FFFFFF" />
+                  <text x="24" y="28" fill="#FF5500" fontFamily="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fontSize="11">
+                    EMPAY_UNIFIED_RAIL // 99.998% SLA
+                  </text>
+                </svg>
+              </div>
             </div>
           </div>
         </div>
