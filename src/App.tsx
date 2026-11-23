@@ -167,10 +167,17 @@ export function App() {
         const theme = sec.getAttribute("data-theme-trigger") || "light";
         ScrollTrigger.create({
           trigger: sec,
-          start: "top 45%",
+          start: sec.id === "portfolio" ? "top 20%" : "top 45%",
           end: "bottom 45%",
           onEnter: () => document.documentElement.setAttribute("data-theme", theme),
           onEnterBack: () => document.documentElement.setAttribute("data-theme", theme),
+          onLeaveBack: () => {
+            if (sec.id === "portfolio") {
+              document.documentElement.setAttribute("data-theme", "dark");
+            } else if (sec.id === "service") {
+              document.documentElement.setAttribute("data-theme", "light");
+            }
+          },
         });
       });
 
@@ -313,6 +320,8 @@ export function App() {
               scrub: 1,
               anticipatePin: 1,
               invalidateOnRefresh: true,
+              onEnter: () => document.documentElement.setAttribute("data-theme", "dark"),
+              onEnterBack: () => document.documentElement.setAttribute("data-theme", "dark"),
               onUpdate: (self) => {
                 if (hBar) hBar.style.transform = `scaleX(${self.progress})`;
               },
@@ -332,6 +341,8 @@ export function App() {
             scrub: 0.4,
             anticipatePin: 1,
             invalidateOnRefresh: true,
+            onEnter: () => document.documentElement.setAttribute("data-theme", "dark"),
+            onEnterBack: () => document.documentElement.setAttribute("data-theme", "dark"),
             onUpdate: (self) => {
               const p = self.progress;
               if (archBar) archBar.style.transform = `scaleX(${p})`;

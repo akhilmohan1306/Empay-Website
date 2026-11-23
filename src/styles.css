@@ -1800,6 +1800,16 @@ html.menu-open .stacked-menu__card {
   justify-content: center;
   overflow: hidden;
   padding: clamp(2rem, 5vh, 4rem) 0;
+  background: var(--navy);
+  color: var(--white);
+}
+
+.hscroll-section .section-h2 {
+  color: var(--white);
+}
+
+.hscroll-section .eyebrow {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .hscroll-section__sticky {
@@ -1864,6 +1874,15 @@ html.menu-open .stacked-menu__card {
   flex-direction: column;
   justify-content: space-between;
   flex-shrink: 0;
+  color: var(--white);
+}
+
+.hcard h3 {
+  color: var(--white);
+}
+
+.hcard p {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .hcard--accent {
@@ -2002,6 +2021,16 @@ html.menu-open .stacked-menu__card {
   justify-content: center;
   overflow: hidden;
   padding: clamp(1.5rem, 3.5vh, 3rem) 0;
+  background: var(--navy);
+  color: var(--white);
+}
+
+.arch-section .arch-section__h2 {
+  color: var(--white);
+}
+
+.arch-section .eyebrow {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .arch-section__sticky {
