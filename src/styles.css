@@ -2310,6 +2310,7 @@ html.menu-open .stacked-menu__card {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;
+  scroll-margin-top: clamp(5rem, 10vh, 7rem);
 }
 
 .faq-item__trigger {

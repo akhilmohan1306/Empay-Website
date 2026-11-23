@@ -600,6 +600,60 @@ export function App() {
     }
   };
 
+  const handleCareerToggle = (idx: number, e: React.MouseEvent<HTMLButtonElement>) => {
+    const triggerBtn = e.currentTarget;
+    const currentCard = triggerBtn.closest(".faq-item") as HTMLElement | null;
+    const isCurrentlyOpen = openFaqIdx === idx;
+
+    if (isCurrentlyOpen) {
+      setOpenFaqIdx(null);
+      window.setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 520);
+      return;
+    }
+
+    // Determine if an open accordion card is currently located ABOVE the clicked card
+    const prevOpenIdx = openFaqIdx;
+    let heightAboveToRemove = 0;
+
+    if (prevOpenIdx !== null && prevOpenIdx < idx && currentCard) {
+      const listEl = currentCard.parentElement;
+      if (listEl) {
+        const allPanels = listEl.querySelectorAll<HTMLElement>(".faq-item__panel");
+        const openPanel = allPanels[prevOpenIdx];
+        if (openPanel) {
+          heightAboveToRemove = openPanel.offsetHeight;
+        }
+      }
+    }
+
+    setOpenFaqIdx(idx);
+
+    if (currentCard) {
+      const rect = currentCard.getBoundingClientRect();
+      const currentDocTop = rect.top + window.scrollY;
+      const headerOffset = window.innerWidth <= 768 ? 75 : 95;
+      const targetScrollY = Math.max(0, currentDocTop - heightAboveToRemove - headerOffset);
+
+      if (lenisRef.current) {
+        lenisRef.current.scrollTo(targetScrollY, {
+          duration: prefersReducedMotion ? 0 : 0.65,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        });
+      } else {
+        window.scrollTo({
+          top: targetScrollY,
+          behavior: prefersReducedMotion ? "auto" : "smooth",
+        });
+      }
+    }
+
+    window.setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 520);
+  };
+
   const togglePill = (name: string) => {
     setSelectedPills((prev) =>
       prev.includes(name) ? prev.filter((p) => p !== name) : [...prev, name]
@@ -1900,14 +1954,14 @@ export function App() {
                         type="button"
                         className="faq-item__trigger"
                         aria-expanded={isOpen}
-                        onClick={() => setOpenFaqIdx(isOpen ? null : idx)}
+                        onClick={(e) => handleCareerToggle(idx, e)}
                       >
                         <span>{role.title}</span>
                         <span className="faq-item__icon" aria-hidden="true">
                           +
                         </span>
                       </button>
-                      <div className="faq-item__panel" style={{ maxHeight: isOpen ? "1800px" : "0px" }}>
+                      <div className="faq-item__panel" style={{ maxHeight: isOpen ? "2400px" : "0px" }}>
                         <div className="career-body">
                           <div className="career-meta">
                             <span>{role.experience}</span>
