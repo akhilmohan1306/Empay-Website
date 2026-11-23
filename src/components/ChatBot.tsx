@@ -405,18 +405,18 @@ export const ChatBot: React.FC<ChatBotProps> = ({ onNavigate }) => {
             try {
               const parsed = JSON.parse(dataRaw);
               errorMsg = parsed.error || parsed.detail || errorMsg;
-            } catch {}
+            } catch { }
             setMessages((prev) =>
               prev.map((m) =>
                 m.id === botMsgId
                   ? {
-                      ...m,
-                      isStreaming: false,
-                      isError: true,
-                      text: accumulatedText
-                        ? `${accumulatedText}\n\n⚠️ ${errorMsg}`
-                        : `⚠️ ${errorMsg}`,
-                    }
+                    ...m,
+                    isStreaming: false,
+                    isError: true,
+                    text: accumulatedText
+                      ? `${accumulatedText}\n\n⚠️ ${errorMsg}`
+                      : `⚠️ ${errorMsg}`,
+                  }
                   : m
               )
             );
@@ -432,7 +432,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ onNavigate }) => {
                   )
                 );
               }
-            } catch {}
+            } catch { }
           }
         }
       }
@@ -452,11 +452,11 @@ export const ChatBot: React.FC<ChatBotProps> = ({ onNavigate }) => {
         prev.map((m) =>
           m.id === botMsgId
             ? {
-                ...m,
-                isStreaming: false,
-                isError: true,
-                text: "⚠️ Unable to reach RAG backend at 192.168.1.182:8000. Ensure the host PC is running and firewall allows port 8000.",
-              }
+              ...m,
+              isStreaming: false,
+              isError: true,
+              text: "⚠️ Unable to reach RAG backend at 192.168.1.182:8000. Ensure the host PC is running and firewall allows port 8000.",
+            }
             : m
         )
       );
@@ -587,9 +587,8 @@ export const ChatBot: React.FC<ChatBotProps> = ({ onNavigate }) => {
             title={`Backend Status: ${backendStatus}`}
           >
             <span
-              className={`empay-chat-launcher__pulse ${
-                backendStatus === "offline" ? "is-offline" : ""
-              }`}
+              className={`empay-chat-launcher__pulse ${backendStatus === "offline" ? "is-offline" : ""
+                }`}
             />
           </span>
         )}
@@ -613,9 +612,8 @@ export const ChatBot: React.FC<ChatBotProps> = ({ onNavigate }) => {
 
       {/* Floating Chat Window Panel */}
       <div
-        className={`empay-chat-panel ${isOpen ? "is-open" : ""} ${
-          isExpanded ? "is-expanded" : ""
-        }`}
+        className={`empay-chat-panel ${isOpen ? "is-open" : ""} ${isExpanded ? "is-expanded" : ""
+          }`}
         role="dialog"
         aria-modal={isExpanded}
         aria-label="Empay Intelligent RAG Chatbot"
@@ -631,9 +629,8 @@ export const ChatBot: React.FC<ChatBotProps> = ({ onNavigate }) => {
             <div className="empay-chat-avatar">
               <span>EP</span>
               <span
-                className={`empay-chat-avatar__online ${
-                  backendStatus === "offline" ? "is-offline" : ""
-                }`}
+                className={`empay-chat-avatar__online ${backendStatus === "offline" ? "is-offline" : ""
+                  }`}
               />
             </div>
             <div className="empay-chat-header__info">
@@ -650,8 +647,8 @@ export const ChatBot: React.FC<ChatBotProps> = ({ onNavigate }) => {
                   {backendStatus === "online"
                     ? "RAG Connected"
                     : backendStatus === "offline"
-                    ? "Backend Offline"
-                    : "Connecting..."}
+                      ? "Backend Offline"
+                      : "Connecting..."}
                 </span>
               </div>
             </div>
@@ -746,9 +743,8 @@ export const ChatBot: React.FC<ChatBotProps> = ({ onNavigate }) => {
           {messages.map((m) => (
             <div
               key={m.id}
-              className={`empay-chat-msg empay-chat-msg--${m.sender} ${
-                m.isError ? "empay-chat-msg--error" : ""
-              }`}
+              className={`empay-chat-msg empay-chat-msg--${m.sender} ${m.isError ? "empay-chat-msg--error" : ""
+                }`}
             >
               <div className="empay-chat-msg__bubble">
                 <div className="empay-chat-msg__text">
@@ -784,9 +780,8 @@ export const ChatBot: React.FC<ChatBotProps> = ({ onNavigate }) => {
                   <div className="empay-chat-tts-container">
                     <button
                       type="button"
-                      className={`empay-chat-tts-btn ${
-                        activeAudioMsgId === m.id ? "is-playing" : ""
-                      }`}
+                      className={`empay-chat-tts-btn ${activeAudioMsgId === m.id ? "is-playing" : ""
+                        }`}
                       disabled={m.audioLoading}
                       onClick={() => handlePlayTTS(m.id, m.text)}
                       title={activeAudioMsgId === m.id ? "Stop Audio" : "Listen via TTS"}
