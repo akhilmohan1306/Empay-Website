@@ -297,19 +297,21 @@ export function App() {
       }
 
       const mm = gsap.matchMedia();
-      mm.add("(min-width: 721px)", () => {
+      mm.add("(min-width: 769px)", () => {
         const hSec = document.getElementById("business");
         const hTrack = document.getElementById("hscroll-track");
         const hBar = document.getElementById("hscroll-progress-bar");
         if (hSec && hTrack) {
           gsap.to(hTrack, {
-            x: () => -(hTrack.scrollWidth - window.innerWidth + 120),
+            x: () => -(hTrack.scrollWidth - window.innerWidth + 140),
             ease: "none",
             scrollTrigger: {
               trigger: hSec,
+              pin: true,
               start: "top top",
-              end: "bottom bottom",
-              scrub: 0.6,
+              end: () => `+=${Math.max(1400, hTrack.scrollWidth - window.innerWidth + 300)}`,
+              scrub: 1,
+              anticipatePin: 1,
               invalidateOnRefresh: true,
               onUpdate: (self) => {
                 if (hBar) hBar.style.transform = `scaleX(${self.progress})`;
@@ -324,9 +326,11 @@ export function App() {
         if (archSec && archTrack) {
           ScrollTrigger.create({
             trigger: archSec,
+            pin: true,
             start: "top top",
-            end: "bottom bottom",
-            scrub: 0.2,
+            end: "+=1800",
+            scrub: 0.4,
+            anticipatePin: 1,
             invalidateOnRefresh: true,
             onUpdate: (self) => {
               const p = self.progress;
@@ -337,7 +341,7 @@ export function App() {
                 setActiveArchNode(idx);
                 gsap.to(archTrack, {
                   xPercent: -idx * 100,
-                  duration: 0.4,
+                  duration: 0.35,
                   ease: "power2.out",
                   overwrite: "auto",
                 });

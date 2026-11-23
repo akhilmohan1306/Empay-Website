@@ -522,7 +522,7 @@ html[data-theme="dark"] .pill-btn--navy {
   background: var(--bg);
   width: 100%;
   max-width: 100vw;
-  overflow-x: hidden;
+  overflow-x: clip;
   transition: background-color 0.65s var(--ease-editorial);
 }
 
@@ -1775,13 +1775,19 @@ html.menu-open .stacked-menu__card {
 
 .hscroll-section {
   position: relative;
-  height: 220vh;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  padding: clamp(2rem, 5vh, 4rem) 0;
 }
 
 .hscroll-section__sticky {
-  position: sticky;
-  top: 0;
-  height: 100svh;
+  position: relative;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1971,19 +1977,23 @@ html.menu-open .stacked-menu__card {
 
 .arch-section {
   position: relative;
-  height: 220vh;
-  padding: 0;
-}
-
-.arch-section__sticky {
-  position: sticky;
-  top: 0;
-  height: 100svh;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
-  padding: clamp(0.75rem, 2vh, 1.5rem) 0;
+  padding: clamp(1.5rem, 3.5vh, 3rem) 0;
+}
+
+.arch-section__sticky {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .arch-section__inner {
