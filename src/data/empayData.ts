@@ -438,3 +438,98 @@ export const CAREER_ROLES: CareerRole[] = [
     ],
   },
 ];
+
+export interface ClientPartnerItem {
+  id: string;
+  name: string;
+  type: "client" | "partner";
+  category: string;
+  subtitle: string;
+  badge: string;
+}
+
+export const CLIENT_LOGOS: ClientPartnerItem[] = [
+  {
+    id: "client-1",
+    name: "Logo 1",
+    type: "client",
+    category: "Commercial Banking",
+    subtitle: "Tier-1 Commercial Bank",
+    badge: "Core Banking",
+  },
+  {
+    id: "client-2",
+    name: "Logo 2",
+    type: "client",
+    category: "Retail Banking",
+    subtitle: "National Retail Bank",
+    badge: "Card Issuance",
+  },
+  {
+    id: "client-3",
+    name: "Logo 3",
+    type: "client",
+    category: "Switch Network",
+    subtitle: "Transaction Switch",
+    badge: "EFT Switching",
+  },
+  {
+    id: "client-4",
+    name: "Logo 4",
+    type: "client",
+    category: "Merchant Acquirer",
+    subtitle: "Payment Aggregator & IPG",
+    badge: "POS & Gateway",
+  },
+  {
+    id: "client-5",
+    name: "Logo 5",
+    type: "client",
+    category: "FinTech Enterprise",
+    subtitle: "Digital Wallet Engine",
+    badge: "FinTech Engine",
+  },
+];
+
+export const PARTNER_LOGOS: ClientPartnerItem[] = [
+  {
+    id: "partner-1",
+    name: "RuPay",
+    type: "partner",
+    category: "Payment Scheme",
+    subtitle: "National Card Network",
+    badge: "Certified",
+  },
+  {
+    id: "partner-2",
+    name: "Visa",
+    type: "partner",
+    category: "Global Network",
+    subtitle: "Worldwide Card Scheme",
+    badge: "Certified",
+  },
+  {
+    id: "partner-3",
+    name: "Mastercard",
+    type: "partner",
+    category: "Global Network",
+    subtitle: "Worldwide Payments",
+    badge: "Certified",
+  },
+  {
+    id: "partner-4",
+    name: "American Express",
+    type: "partner",
+    category: "Payment Network",
+    subtitle: "Integrated Payments",
+    badge: "Interchange",
+  },
+  {
+    id: "partner-5",
+    name: "PA-DSS",
+    type: "partner",
+    category: "Security Standard",
+    subtitle: "PCI Security Council",
+    badge: "Compliant",
+  },
+];
