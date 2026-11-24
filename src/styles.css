@@ -2213,14 +2213,17 @@ html.menu-open .stacked-menu__card {
   gap: clamp(2rem, 4vw, 3rem);
 }
 
-/* The White Card Banner matching user reference image */
+/* The Card Banner matching user reference layout (Dark Theme Integration) */
 .client-banner-card {
   width: 100%;
-  background: #ffffff;
-  color: #0A1628;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 24px;
   padding: clamp(2.5rem, 4.5vw, 4rem) clamp(2rem, 4vw, 3.5rem);
-  box-shadow: 0 25px 65px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   gap: clamp(2.5rem, 5vw, 4.5rem);
@@ -2248,7 +2251,7 @@ html.menu-open .stacked-menu__card {
   font-family: var(--font-display);
   font-size: clamp(2rem, 3.2vw, 2.75rem);
   font-weight: 700;
-  color: #0A1628;
+  color: var(--white);
   line-height: 1.12;
   letter-spacing: -0.03em;
   margin: 0 0 1rem 0;
@@ -2257,7 +2260,7 @@ html.menu-open .stacked-menu__card {
 .client-banner-card__desc {
   font-size: 0.95rem;
   line-height: 1.65;
-  color: #64748B;
+  color: rgba(255, 255, 255, 0.65);
   margin: 0;
 }
 
@@ -2280,7 +2283,7 @@ html.menu-open .stacked-menu__card {
   align-items: center;
   gap: 0.75rem;
   text-decoration: none;
-  color: #1E293B;
+  color: rgba(255, 255, 255, 0.9);
   transition: transform 0.25s var(--ease-out-expo), color 0.2s ease;
   padding: 0.5rem 0.25rem;
   border-radius: 8px;
@@ -2297,7 +2300,7 @@ html.menu-open .stacked-menu__card {
   flex-shrink: 0;
   display: grid;
   place-items: center;
-  color: #334155;
+  color: rgba(255, 255, 255, 0.85);
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
@@ -2329,15 +2332,16 @@ html.menu-open .stacked-menu__card {
 .client-brand-logo__sub {
   font-family: var(--font-mono);
   font-size: 0.65rem;
-  color: #94A3B8;
+  color: rgba(255, 255, 255, 0.45);
   letter-spacing: 0.02em;
   text-transform: uppercase;
   margin-top: 2px;
   white-space: nowrap;
+  transition: color 0.2s ease;
 }
 
 .client-brand-logo:hover .client-brand-logo__sub {
-  color: #64748B;
+  color: rgba(255, 255, 255, 0.75);
 }
 
 /* Partners Marquee Ribbon */
