@@ -122,7 +122,6 @@ export function App() {
   const [activeArchNode, setActiveArchNode] = useState(0);
   const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(0);
   const [selectedPills, setSelectedPills] = useState<string[]>(["MARS"]);
-  const [partnerTab, setPartnerTab] = useState<"all" | "clients" | "partners">("all");
   const [demoSubmitted, setDemoSubmitted] = useState(false);
   const [utcClock, setUtcClock] = useState("00:00 UTC");
 
@@ -132,12 +131,6 @@ export function App() {
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     []
   );
-
-  const displayedPartners = useMemo(() => {
-    if (partnerTab === "clients") return CLIENT_LOGOS;
-    if (partnerTab === "partners") return PARTNER_LOGOS;
-    return [...CLIENT_LOGOS, ...PARTNER_LOGOS];
-  }, [partnerTab]);
 
   // Live UTC clock
   useEffect(() => {
@@ -477,13 +470,12 @@ export function App() {
       );
 
       gsap.fromTo(
-        ".partner-card",
-        { y: 30, opacity: 0 },
+        ".client-banner-card",
+        { y: 35, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          stagger: 0.08,
-          duration: 0.7,
+          duration: 0.8,
           ease: "power2.out",
           scrollTrigger: {
             trigger: "#partners",
@@ -2010,67 +2002,34 @@ export function App() {
           </section>
 
           {/* =====================================================
-              S6.5: PARTNERS & CLIENTS (Logo Showcase with Logo 1, 2, 3, 4, 5)
+              S6.5: PARTNERS & CLIENTS (Reference White Card Banner Layout)
               ===================================================== */}
           <section className="partners-section" id="partners" data-theme-trigger="dark">
             <div className="container partners-inner">
-              <div className="partners-header">
-                <span className="pill-eyebrow">PARTNERS &amp; CLIENTS</span>
-                <h2 className="editorial-h2 partners-h2">
-                  Trusted by Global Leaders &amp; Ecosystem Partners
-                </h2>
-                <p className="clients-lead">
-                  Empowering premier commercial banks, fintech enterprises, and certified card networks with mission-critical transaction infrastructure.
-                </p>
-
-                {/* Filter Tabs */}
-                <div className="partners-filter" role="tablist" aria-label="Partner and Client Categories">
-                  <button
-                    type="button"
-                    className={`partners-filter__btn ${partnerTab === "all" ? "is-active" : ""}`}
-                    onClick={() => setPartnerTab("all")}
-                  >
-                    All Alliances (10)
-                  </button>
-                  <button
-                    type="button"
-                    className={`partners-filter__btn ${partnerTab === "clients" ? "is-active" : ""}`}
-                    onClick={() => setPartnerTab("clients")}
-                  >
-                    Our Clients (Logo 1–5)
-                  </button>
-                  <button
-                    type="button"
-                    className={`partners-filter__btn ${partnerTab === "partners" ? "is-active" : ""}`}
-                    onClick={() => setPartnerTab("partners")}
-                  >
-                    Strategic Partners
-                  </button>
+              <div className="client-banner-card">
+                <div className="client-banner-card__left">
+                  <div className="client-banner-card__dash" aria-hidden="true" />
+                  <h2 className="client-banner-card__title">Our Clients</h2>
+                  <p className="client-banner-card__desc">
+                    We have worked with renowned names. From hotels, offices and homes, we have worked with clients from all backgrounds.
+                  </p>
                 </div>
-              </div>
 
-              {/* Logo Cards Grid */}
-              <div className="partners-grid">
-                {displayedPartners.map((item) => (
-                  <div className="partner-card" key={item.id} data-type={item.type}>
-                    <div className="partner-card__icon-wrap">
-                      <div className="partner-card__icon">
-                        {renderLogoMark(item.name, item.type)}
+                <div className="client-banner-card__right">
+                  <div className="client-banner-card__grid">
+                    {[...CLIENT_LOGOS, ...PARTNER_LOGOS].map((item) => (
+                      <div className="client-brand-logo" key={item.id} title={`${item.name} – ${item.subtitle}`}>
+                        <div className="client-brand-logo__icon" aria-hidden="true">
+                          {renderLogoMark(item.name, item.type)}
+                        </div>
+                        <div className="client-brand-logo__text">
+                          <span className="client-brand-logo__name">{item.name}</span>
+                          <span className="client-brand-logo__sub">{item.category}</span>
+                        </div>
                       </div>
-                      <span className="partner-card__badge">{item.badge}</span>
-                    </div>
-                    <div className="partner-card__content">
-                      <div className="partner-card__name-row">
-                        <h3 className="partner-card__name">{item.name}</h3>
-                        <span className="partner-card__type-pill">
-                          {item.type === "client" ? "Client" : "Partner"}
-                        </span>
-                      </div>
-                      <span className="partner-card__cat">{item.category}</span>
-                      <p className="partner-card__sub">{item.subtitle}</p>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                </div>
               </div>
 
               {/* Continuous Sliding Marquee Ticker */}
