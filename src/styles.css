@@ -892,6 +892,50 @@ html.menu-open .stacked-menu__card {
   transition: background-color 0.8s var(--ease-editorial);
 }
 
+/* Dedicated Inner Page Hero */
+.page-hero {
+  position: relative;
+  min-height: 48vh;
+  padding: calc(var(--header-h) + clamp(2.5rem, 4.5vw, 4rem)) 0 clamp(2.5rem, 4vw, 3.5rem);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  transition: background-color 0.8s var(--ease-editorial);
+}
+
+.page-hero__container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  padding-inline: clamp(1rem, 2vw, 2.5rem);
+}
+
+.page-hero__centerpiece {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 1100px;
+  margin-block: auto;
+  padding-block: clamp(1rem, 2vw, 2rem);
+  gap: clamp(1.25rem, 2vw, 2rem);
+}
+
+.page-hero__centerpiece .hero__cinematic-title {
+  font-size: clamp(2.2rem, 5.2vw, 4.2rem);
+  line-height: 1.05;
+}
+
+.page-hero__cta-cluster {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
 .hero__container {
   position: relative;
   z-index: 2;
