@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
@@ -21,48 +22,30 @@ ScrollTrigger.config({ ignoreMobileResize: true, limitCallbacks: true });
 const ABOUT_STATEMENT =
   "Empay Software Solutions specializes in providing an array of cutting edge solutions and services for the financial services industry in the electronic and mobile payment verticals. Founded in 2008 by domain veterans.";
 
-const SECTION_PATH_MAP: Record<string, string> = {
+const SECTION_TO_ROUTE: Record<string, string> = {
   "#hero": "/",
   "#about": "/about",
   "#service": "/services",
   "#pricing": "/products",
-  "#product-mars": "/products",
-  "#product-reconplus": "/products",
+  "#product-mars": "/products#product-mars",
+  "#product-reconplus": "/products#product-reconplus",
   "#portfolio": "/clients",
   "#partners": "/partners",
-  "#architecture": "/services",
+  "#architecture": "/services#architecture",
   "#career": "/careers",
   "#footer": "/contact",
 };
 
-const PATH_SECTION_MAP: Record<string, string> = {
-  "/": "#hero",
-  "/about": "#about",
-  "/services": "#service",
-  "/products": "#pricing",
-  "/clients": "#portfolio",
-  "/partners": "#partners",
-  "/careers": "#career",
-  "/contact": "#footer",
-};
-
-const getBasePrefix = () => {
-  const base = import.meta.env.BASE_URL || "/";
-  return base.endsWith("/") ? base.slice(0, -1) : base;
-};
-
-const updateBrowserUrl = (path: string, replace = false) => {
-  if (typeof window === "undefined") return;
-  const prefix = getBasePrefix();
-  const full = (prefix + path) || "/";
-  if (window.location.pathname !== full) {
-    if (replace) {
-      window.history.replaceState(null, "", full);
-    } else {
-      window.history.pushState(null, "", full);
-    }
-  }
-};
+const VALID_ROUTES = new Set([
+  "/",
+  "/about",
+  "/services",
+  "/products",
+  "/clients",
+  "/partners",
+  "/careers",
+  "/contact",
+]);
 
 function renderLogoMark(name: string, _type?: "client" | "partner") {
   if (name === "Logo 1") {
@@ -168,13 +151,19 @@ export function App() {
   const [demoSubmitted, setDemoSubmitted] = useState(false);
 
   const lenisRef = useRef<Lenis | null>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const normalizedPath = location.pathname === "" ? "/" : location.pathname.replace(/\/+$/, "") || "/";
+  const currentRoute = VALID_ROUTES.has(normalizedPath) ? normalizedPath : "/";
+  const showAll = currentRoute === "/";
 
   const prefersReducedMotion = useMemo(
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     []
   );
 
-  // Preloader sequence + Lenis smooth scroll + GSAP ScrollTrigger choreography
+  // Preloader sequence + Lenis smooth scroll (runs once on mount)
   useEffect(() => {
     document.documentElement.classList.add("is-preloading");
 
@@ -198,21 +187,27 @@ export function App() {
 
     const animateHeroEntrance = () => {
       if (prefersReducedMotion) return;
-      gsap.fromTo(
-        ".hero__eyebrow-chip",
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }
-      );
-      gsap.fromTo(
-        ".title-word",
-        { yPercent: 110, opacity: 0 },
-        { yPercent: 0, opacity: 1, duration: 0.95, stagger: 0.06, ease: "power4.out", delay: 0.08 }
-      );
-      gsap.fromTo(
-        ".hero__editorial-sub, .hero__product-capsule-dock",
-        { y: 25, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.85, stagger: 0.1, delay: 0.25, ease: "power3.out" }
-      );
+      if (document.querySelector(".hero__eyebrow-chip")) {
+        gsap.fromTo(
+          ".hero__eyebrow-chip",
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }
+        );
+      }
+      if (document.querySelector(".title-word")) {
+        gsap.fromTo(
+          ".title-word",
+          { yPercent: 110, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 0.95, stagger: 0.06, ease: "power4.out", delay: 0.08 }
+        );
+      }
+      if (document.querySelector(".hero__editorial-sub, .hero__product-capsule-dock")) {
+        gsap.fromTo(
+          ".hero__editorial-sub, .hero__product-capsule-dock",
+          { y: 25, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.85, stagger: 0.1, delay: 0.25, ease: "power3.out" }
+        );
+      }
     };
 
     // Simple 900ms editorial preloader
@@ -224,14 +219,6 @@ export function App() {
       document.documentElement.classList.remove("is-preloading");
       setPreDone(true);
       lenis?.start();
-
-      const pathname = window.location.pathname;
-      const prefix = getBasePrefix();
-      const cleanPath = pathname.startsWith(prefix) ? pathname.slice(prefix.length) || "/" : pathname;
-      const targetSec = PATH_SECTION_MAP[cleanPath];
-      if (targetSec && targetSec !== "#hero") {
-        document.querySelector(targetSec)?.scrollIntoView();
-      }
     } else {
       const start = performance.now();
       const duration = 900;
@@ -249,26 +236,42 @@ export function App() {
           removeTimerId = window.setTimeout(() => {
             setPreDone(true);
             ScrollTrigger.refresh();
-
-            // Direct route check on initial load (e.g. /about, /careers, /products)
-            const pathname = window.location.pathname;
-            const prefix = getBasePrefix();
-            const cleanPath = pathname.startsWith(prefix) ? pathname.slice(prefix.length) || "/" : pathname;
-            const targetSec = PATH_SECTION_MAP[cleanPath];
-            if (targetSec && targetSec !== "#hero") {
-              const el = document.querySelector(targetSec);
-              if (el) {
-                if (lenis) {
-                  lenis.scrollTo(targetSec, { duration: 1.2 });
-                } else {
-                  el.scrollIntoView({ behavior: "smooth" });
-                }
-              }
-            }
           }, 760);
         }
       };
       preRafId = requestAnimationFrame(tick);
+    }
+
+    return () => {
+      if (preRafId !== null) cancelAnimationFrame(preRafId);
+      if (leaveTimerId !== null) window.clearTimeout(leaveTimerId);
+      if (removeTimerId !== null) window.clearTimeout(removeTimerId);
+      if (tickerFn) gsap.ticker.remove(tickerFn);
+      lenis?.destroy();
+      lenisRef.current = null;
+      document.documentElement.classList.remove("is-preloading");
+    };
+  }, [prefersReducedMotion]);
+
+  // GSAP ScrollTrigger choreography (re-runs cleanly on every dedicated route)
+  useEffect(() => {
+    const isLightInitial = currentRoute === "/" || currentRoute === "/about";
+    document.documentElement.setAttribute("data-theme", isLightInitial ? "light" : "dark");
+
+    if (location.hash) {
+      window.setTimeout(() => {
+        const el = document.querySelector(location.hash);
+        if (el) {
+          if (lenisRef.current) {
+            lenisRef.current.scrollTo(location.hash, { duration: 1.0 });
+          } else {
+            el.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
+          }
+        }
+      }, 100);
+    } else {
+      window.scrollTo(0, 0);
+      lenisRef.current?.scrollTo(0, { immediate: true });
     }
 
     // GSAP ScrollTrigger animations inside gsap.context for clean unmount cleanup
@@ -318,7 +321,7 @@ export function App() {
           onEnter: () => document.documentElement.setAttribute("data-theme", theme),
           onEnterBack: () => document.documentElement.setAttribute("data-theme", theme),
           onLeaveBack: () => {
-            if (sec.id === "service") {
+            if (sec.id === "service" && currentRoute === "/") {
               document.documentElement.setAttribute("data-theme", "light");
             }
           },
@@ -536,58 +539,17 @@ export function App() {
           },
         }
       );
-
-      // Update browser URL as user scrolls through sections
-      const routeSections = [
-        { id: "hero", path: "/" },
-        { id: "about", path: "/about" },
-        { id: "service", path: "/services" },
-        { id: "pricing", path: "/products" },
-        { id: "portfolio", path: "/clients" },
-        { id: "partners", path: "/partners" },
-        { id: "career", path: "/careers" },
-        { id: "footer", path: "/contact" },
-      ];
-
-      routeSections.forEach(({ id, path }) => {
-        const el = document.getElementById(id);
-        if (el) {
-          ScrollTrigger.create({
-            trigger: el,
-            start: "top 45%",
-            end: "bottom 45%",
-            onEnter: () => updateBrowserUrl(path, true),
-            onEnterBack: () => updateBrowserUrl(path, true),
-          });
-        }
-      });
     });
 
-    const onPop = () => {
-      const p = window.location.pathname;
-      const pref = getBasePrefix();
-      const cPath = p.startsWith(pref) ? p.slice(pref.length) || "/" : p;
-      const targetSec = PATH_SECTION_MAP[cPath] || "#hero";
-      if (lenisRef.current) {
-        lenisRef.current.scrollTo(targetSec, { duration: 1.2 });
-      } else {
-        document.querySelector(targetSec)?.scrollIntoView({ behavior: "smooth" });
-      }
-    };
-    window.addEventListener("popstate", onPop);
+    const refreshTimer = window.setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 120);
 
     return () => {
-      window.removeEventListener("popstate", onPop);
-      if (preRafId !== null) cancelAnimationFrame(preRafId);
-      if (leaveTimerId !== null) window.clearTimeout(leaveTimerId);
-      if (removeTimerId !== null) window.clearTimeout(removeTimerId);
+      window.clearTimeout(refreshTimer);
       ctx.revert();
-      if (tickerFn) gsap.ticker.remove(tickerFn);
-      lenis?.destroy();
-      lenisRef.current = null;
-      document.documentElement.classList.remove("is-preloading");
     };
-  }, [prefersReducedMotion]);
+  }, [currentRoute, location.hash, prefersReducedMotion]);
 
   // Desktop magnetic buttons & custom orb cursor
   useEffect(() => {
@@ -714,7 +676,7 @@ export function App() {
       if (rafId !== null) cancelAnimationFrame(rafId);
       cleanups.forEach((fn) => fn());
     };
-  }, [prefersReducedMotion]);
+  }, [currentRoute, prefersReducedMotion]);
 
   // Menu drawer close handler with deferred depth reset
   const closeMenu = () => {
@@ -776,17 +738,43 @@ export function App() {
   };
 
   const scrollToSection = (target: string | number) => {
-    if (typeof target === "number" || target === "#hero") {
-      updateBrowserUrl("/");
-    } else if (typeof target === "string" && SECTION_PATH_MAP[target]) {
-      updateBrowserUrl(SECTION_PATH_MAP[target]);
-    }
-
     const run = () => {
+      if (typeof target === "number") {
+        if (lenisRef.current) {
+          lenisRef.current.scrollTo(target, { duration: 1.2 });
+        } else {
+          window.scrollTo({ top: target, behavior: prefersReducedMotion ? "auto" : "smooth" });
+        }
+        return;
+      }
+
+      const routeTarget = target.startsWith("/") ? target : SECTION_TO_ROUTE[target];
+      if (routeTarget) {
+        const [pathPart, hashPart] = routeTarget.split("#");
+        const targetRoute = pathPart || "/";
+        if (currentRoute === targetRoute) {
+          if (hashPart) {
+            const hashSel = `#${hashPart}`;
+            if (lenisRef.current) {
+              lenisRef.current.scrollTo(hashSel, { duration: 1.2 });
+            } else {
+              document
+                .querySelector(hashSel)
+                ?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
+            }
+          } else if (lenisRef.current) {
+            lenisRef.current.scrollTo(0, { duration: 1.0 });
+          } else {
+            window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
+          }
+        } else {
+          navigate(routeTarget);
+        }
+        return;
+      }
+
       if (lenisRef.current) {
         lenisRef.current.scrollTo(target, { duration: 1.2 });
-      } else if (typeof target === "number") {
-        window.scrollTo({ top: target, behavior: prefersReducedMotion ? "auto" : "smooth" });
       } else {
         document
           .querySelector(target)
@@ -1210,11 +1198,15 @@ export function App() {
       </aside>
 
       {/* MAIN VIEWPORT SHELL */}
-      <div className="page-shell" id="page-shell">
-        <main id="main-content">
+      <div
+        className={`page-shell ${currentRoute === "/contact" ? "is-contact-page" : ""}`}
+        id="page-shell"
+      >
+        <main id="main-content" className={currentRoute !== "/" ? "is-subpage" : ""}>
           {/* =====================================================
               S0: PRODUCT-BASED SALES HERO (Primary InteractiveDotGrid)
               ===================================================== */}
+          {showAll && (
           <section className="hero" id="hero" data-theme-trigger="light">
             <InteractiveDotGrid
               theme="light"
@@ -1350,10 +1342,13 @@ export function App() {
               </div>
             </div>
           </section>
+          )}
 
           {/* =====================================================
               S1: ABOUT EMPAY (Clean background, NO dot grid)
               ===================================================== */}
+          {(showAll || currentRoute === "/about") && (
+          <>
           <section className="about-scrub" id="about" data-theme-trigger="light">
             <div className="about-scrub__pin">
               <div className="container about-scrub__inner">
@@ -1427,10 +1422,13 @@ export function App() {
               </div>
             </div>
           </section>
+          </>
+          )}
 
           {/* =====================================================
               S3: WHAT WE OFFER / SERVICES
               ===================================================== */}
+          {(showAll || currentRoute === "/services") && (
           <section className="expertise-section" id="service" data-theme-trigger="dark">
             <div className="container">
               <div className="section-head">
@@ -1523,10 +1521,13 @@ export function App() {
               </div>
             </div>
           </section>
+          )}
 
           {/* =====================================================
               S4: PRODUCTS — "It's what we do."
               ===================================================== */}
+          {(showAll || currentRoute === "/products") && (
+          <>
           <section className="products-section" id="pricing" data-theme-trigger="dark">
             <div className="container">
               <div className="section-head section-head--center">
@@ -1894,10 +1895,13 @@ export function App() {
               </div>
             </div>
           </section>
+          </>
+          )}
 
           {/* =====================================================
               S6: OUR PRESTIGIOUS CLIENTS & ECOSYSTEM (Redesigned FinTech Bento)
               ===================================================== */}
+          {(showAll || currentRoute === "/clients") && (
           <section className="proof-section" id="portfolio" data-theme-trigger="dark">
             <div className="container proof-section__inner">
               <div className="proof-center" id="proof-center">
@@ -2078,10 +2082,12 @@ export function App() {
               </div>
             </div>
           </section>
+          )}
 
           {/* =====================================================
               S6.5: PARTNERS & CLIENTS (Reference White Card Banner Layout)
               ===================================================== */}
+          {(showAll || currentRoute === "/clients" || currentRoute === "/partners") && (
           <section className="partners-section" id="partners" data-theme-trigger="dark">
             <div className="container partners-inner">
               <div className="client-banner-card">
@@ -2128,10 +2134,12 @@ export function App() {
               </div>
             </div>
           </section>
+          )}
 
           {/* =====================================================
               S7: UNIFIED ARCHITECTURE (Clean background, NO dot grid)
               ===================================================== */}
+          {(showAll || currentRoute === "/services") && (
           <section className="arch-section" id="architecture" data-theme-trigger="dark">
             <div className="arch-section__sticky">
               <div className="container arch-section__inner">
@@ -2229,10 +2237,12 @@ export function App() {
               </div>
             </div>
           </section>
+          )}
 
           {/* =====================================================
               S8: METRICS MARQUEE & CAREERS ACCORDION (Clean, NO dot grid)
               ===================================================== */}
+          {(showAll || currentRoute === "/careers") && (
           <section className="metrics-faq-section" id="career" data-theme-trigger="dark">
             <div className="metrics-marquee" aria-label="Empay key highlights">
               <div className="metrics-marquee__track">
@@ -2360,6 +2370,7 @@ export function App() {
               </div>
             </div>
           </section>
+          )}
         </main>
 
         {/* =====================================================

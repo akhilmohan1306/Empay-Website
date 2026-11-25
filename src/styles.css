@@ -2731,6 +2731,15 @@ html.menu-open .stacked-menu__card {
   padding-bottom: clamp(5rem, 10vw, 8.5rem);
 }
 
+.is-subpage > .metrics-faq-section:first-child,
+.is-subpage > .partners-section:first-child {
+  padding-top: calc(var(--header-h) + clamp(3rem, 6vw, 5rem));
+}
+
+.is-contact-page .site-footer {
+  padding-top: calc(var(--header-h) + clamp(3rem, 6vw, 5rem));
+}
+
 .metrics-marquee {
   overflow: hidden;
   border-block: 1px solid rgba(255, 255, 255, 0.1);
