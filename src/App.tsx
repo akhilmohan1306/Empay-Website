@@ -8,6 +8,14 @@ import { InteractiveDotGrid } from "./components/InteractiveDotGrid";
 import { SplitText } from "./components/SplitText";
 import { ChatBot } from "./components/ChatBot";
 import {
+  AboutHeritageExtra,
+  CareersCultureExtra,
+  PartnersStandardsExtra,
+  ProductsComparisonExtra,
+  ServicesMethodologyExtra,
+  SubpageHero,
+} from "./components/DedicatedPageExtra";
+import {
   ARCH_NODES,
   CAREER_ROLES,
   CLIENT_LOGOS,
@@ -1203,6 +1211,132 @@ export function App() {
         id="page-shell"
       >
         <main id="main-content" className={currentRoute !== "/" ? "is-subpage" : ""}>
+          {currentRoute === "/about" && (
+            <SubpageHero
+              theme="light"
+              eyebrow="ABOUT EMPAY // EST. 2008"
+              badge="PA-DSS CERTIFIED"
+              word1="BUILT"
+              word2="BY"
+              accentWord="FINTECH"
+              word4="VETERANS."
+              pitch="Since 2008, Empay Software Solutions has engineered mission-critical payment acquiring, transaction switching, and automated reconciliation platforms from SmartCity Kochi SEZ."
+              primaryLabel="Explore Products ↗"
+              primaryTarget="#pricing"
+              secondaryLabel="Our Mission ↓"
+              secondaryTarget="#technology"
+              onNavigate={scrollToSection}
+            />
+          )}
+
+          {currentRoute === "/services" && (
+            <SubpageHero
+              theme="dark"
+              eyebrow="WHAT WE OFFER // SERVICES"
+              badge="END-TO-END DELIVERY"
+              word1="ENTERPRISE"
+              word2="PAYMENT"
+              accentWord="ENGINEERING"
+              word4="CONSULTING."
+              pitch="From business analysis and switch architecture to scheme certification and 24/7 production support, our team delivers streamlined, flexible, and low-cost payment systems."
+              primaryLabel="Request Consultation ↗"
+              primaryTarget="#footer"
+              secondaryLabel="View Architecture ↓"
+              secondaryTarget="#architecture"
+              onNavigate={scrollToSection}
+            />
+          )}
+
+          {currentRoute === "/products" && (
+            <SubpageHero
+              theme="dark"
+              eyebrow="FLAGSHIP PLATFORMS // PA-DSS"
+              badge="MARS & RECONPLUS"
+              word1="AUTONOMOUS"
+              word2="ACQUIRING."
+              accentWord="ZERO-ERROR"
+              word4="RECON."
+              pitch="Discover MARS for complete merchant onboarding, POS/IPG acquiring, and scheme clearing, alongside ReconPlus for modular multi-entity transaction reconciliation."
+              primaryLabel="Request Live Demo ↗"
+              primaryTarget="#footer"
+              secondaryLabel="Explore MARS ↓"
+              secondaryTarget="#product-mars"
+              onNavigate={scrollToSection}
+            />
+          )}
+
+          {currentRoute === "/clients" && (
+            <SubpageHero
+              theme="dark"
+              eyebrow="OUR PRESTIGIOUS CLIENTS"
+              badge="BANKS & PROCESSORS"
+              word1="POWERING"
+              word2="INDUSTRY"
+              accentWord="PAYMENT"
+              word4="PIONEERS."
+              pitch="Trusted by issuer banks, acquirer banks, and payment service providers across electronic and mobile payment verticals to deliver reliable, compliant transaction processing."
+              primaryLabel="Partner With Us ↗"
+              primaryTarget="#footer"
+              secondaryLabel="Client Ecosystem ↓"
+              secondaryTarget="#portfolio"
+              onNavigate={scrollToSection}
+            />
+          )}
+
+          {currentRoute === "/partners" && (
+            <SubpageHero
+              theme="dark"
+              eyebrow="GLOBAL SCHEMES & ALLIANCES"
+              badge="MULTI-RAIL CERTIFIED"
+              word1="CERTIFIED"
+              word2="SCHEME"
+              accentWord="NETWORK"
+              word4="ALLIANCES."
+              pitch="Seamless clearing, settlement, and compliance across Visa, MasterCard, RuPay, and American Express backed by PA-DSS certified application security."
+              primaryLabel="Business Enquiries ↗"
+              primaryTarget="#footer"
+              secondaryLabel="View Ecosystem ↓"
+              secondaryTarget="#partners"
+              onNavigate={scrollToSection}
+            />
+          )}
+
+          {currentRoute === "/careers" && (
+            <SubpageHero
+              theme="dark"
+              eyebrow="CAREERS AT EMPAY // KOCHI SEZ"
+              badge="NOW HIRING"
+              word1="ENGINEER"
+              word2="MISSION"
+              accentWord="CRITICAL"
+              word4="PAYMENTS."
+              pitch="Join our core engineering and operations teams at Lulu IT Twin Tower, SmartCity (Kochi) SEZ to build high-volume acquiring and reconciliation software."
+              primaryLabel="View Open Roles ↓"
+              primaryTarget="#career-list"
+              secondaryLabel="Contact HR ↗"
+              secondaryTarget="#footer"
+              onNavigate={scrollToSection}
+            />
+          )}
+
+          {currentRoute === "/contact" && (
+            <SubpageHero
+              theme="dark"
+              eyebrow="CONNECT WITH EMPAY"
+              badge="SMARTCITY, KOCHI"
+              word1="LET'S BUILD"
+              word2="YOUR"
+              accentWord="PAYMENT"
+              word4="FUTURE."
+              pitch="Reach out to our solutions specialists at solutions@empaysoft.com or 0484 486 5189 for product demos, architecture consulting, and enterprise onboarding."
+              primaryLabel="Send Enquiry ↓"
+              primaryTarget="#demo-form"
+              secondaryLabel="Explore Products →"
+              secondaryTarget="#pricing"
+              onNavigate={scrollToSection}
+            />
+          )}
+
           {/* =====================================================
               S0: PRODUCT-BASED SALES HERO (Primary InteractiveDotGrid)
               ===================================================== */}
@@ -2371,6 +2505,12 @@ export function App() {
             </div>
           </section>
           )}
+
+          {currentRoute === "/about" && <AboutHeritageExtra />}
+          {currentRoute === "/services" && <ServicesMethodologyExtra />}
+          {currentRoute === "/products" && <ProductsComparisonExtra />}
+          {currentRoute === "/partners" && <PartnersStandardsExtra />}
+          {currentRoute === "/careers" && <CareersCultureExtra />}
         </main>
 
         {/* =====================================================
