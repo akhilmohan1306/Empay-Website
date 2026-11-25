@@ -123,7 +123,6 @@ export function App() {
   const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(0);
   const [selectedPills, setSelectedPills] = useState<string[]>(["MARS"]);
   const [demoSubmitted, setDemoSubmitted] = useState(false);
-  const [utcClock, setUtcClock] = useState("00:00 UTC");
 
   const lenisRef = useRef<Lenis | null>(null);
 
@@ -131,19 +130,6 @@ export function App() {
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     []
   );
-
-  // Live UTC clock
-  useEffect(() => {
-    const update = () => {
-      const now = new Date();
-      const hh = String(now.getUTCHours()).padStart(2, "0");
-      const mm = String(now.getUTCMinutes()).padStart(2, "0");
-      setUtcClock(`${hh}:${mm} UTC`);
-    };
-    update();
-    const id = window.setInterval(update, 1000);
-    return () => window.clearInterval(id);
-  }, []);
 
   // Preloader sequence + Lenis smooth scroll + GSAP ScrollTrigger choreography
   useEffect(() => {
@@ -1250,25 +1236,6 @@ export function App() {
                   </a>
                 </div>
               </div>
-
-              {/* Bottom Editorial Meta Rail */}
-              <div className="hero__footer-bar">
-                <div className="hero__meta-item">
-                  <span className="hero__live-dot" />
-                  <span>
-                    FINTECH INFRASTRUCTURE · <time id="hero-clock">{utcClock}</time>
-                  </span>
-                </div>
-                <div className="hero__meta-nav">
-                  <span className="hero-loc-pill">SmartCity, Kochi · Founded 2008</span>
-                </div>
-                <div className="hero__scroll-hint">
-                  <span>Scroll to explore</span>
-                  <span className="hero__scroll-line">
-                    <span />
-                  </span>
-                </div>
-              </div>
             </div>
           </section>
 
@@ -1764,7 +1731,6 @@ export function App() {
                   </h2>
                 </div>
                 <div className="hscroll-progress-wrap">
-                  <span className="eyebrow">SCROLL TO TRAVERSE</span>
                   <div className="hscroll-progress">
                     <span id="hscroll-progress-bar" />
                   </div>
@@ -2071,7 +2037,6 @@ export function App() {
                     </h2>
                   </div>
                   <div className="hscroll-progress-wrap">
-                    <span className="eyebrow">SCROLL TO TRAVERSE</span>
                     <div className="hscroll-progress">
                       <span id="arch-progress-bar" />
                     </div>
