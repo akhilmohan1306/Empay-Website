@@ -1083,22 +1083,6 @@ export function App() {
                     <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
                   </a>
                 </li>
-                <li>
-                  <a
-                    href="#product-prevega"
-                    className="stacked-menu__link"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollToSection("#product-prevega");
-                    }}
-                  >
-                    <div>
-                      <span className="stacked-menu__title">Prevega</span>
-                      <small>Electronic Fund Transfer Switch</small>
-                    </div>
-                    <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
-                  </a>
-                </li>
               </ul>
 
               <div className="stacked-menu__wireframe" aria-hidden="true">
@@ -1251,32 +1235,6 @@ export function App() {
                     <div className="hero-capsule__tags">
                       <span>POS &amp; IPG</span>
                       <span>Acquiring</span>
-                    </div>
-                    <span className="hero-capsule__arrow" aria-hidden="true">↗</span>
-                  </a>
-
-                  <div className="hero-capsule-divider" aria-hidden="true" />
-
-                  <a
-                    href="#product-prevega"
-                    className="hero-capsule"
-                    data-magnetic
-                    data-cursor="PREVEGA"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollToSection("#product-prevega");
-                    }}
-                  >
-                    <div className="hero-capsule__meta">
-                      <span className="hero-capsule__num">03</span>
-                      <div className="hero-capsule__info">
-                        <strong>Prevega</strong>
-                        <small>Electronic Fund Transfer Switch</small>
-                      </div>
-                    </div>
-                    <div className="hero-capsule__tags">
-                      <span>EFT Switch</span>
-                      <span>Routing</span>
                     </div>
                     <span className="hero-capsule__arrow" aria-hidden="true">↗</span>
                   </a>
@@ -1495,7 +1453,7 @@ export function App() {
           </section>
 
           {/* =====================================================
-              S4: OUR PRODUCTS (ReconPlus, MARS, Prevega)
+              S4: OUR PRODUCTS (ReconPlus, MARS)
               ===================================================== */}
           <section className="products-section" id="pricing" data-theme-trigger="dark">
             <div className="container">
@@ -1790,115 +1748,6 @@ export function App() {
                           <span>Multi-Bank</span>
                           <span>Configurable</span>
                           <span className="pill-ok">PA-DSS</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </article>
-
-              {/* PRODUCT 03: Prevega (Electronic Fund Transfer Switch) */}
-              <article className="product-story product-story--mars" id="product-prevega">
-                <InteractiveDotGrid
-                  theme="dark"
-                  spacing={24}
-                  radius={112}
-                  maxPush={32}
-                  baseDotRadius={1.2}
-                  maxDotRadius={2.05}
-                  intensity={0.85}
-                />
-
-                <div className="product-story__copy">
-                  <div className="product-story__meta">
-                    <span className="eyebrow eyebrow--orange">PRODUCT 03 // PREVEGA</span>
-                    <span className="product-tag">Electronic Fund Transfer Switch</span>
-                  </div>
-                  <h3
-                    className="product-story__title"
-                    data-split="lines"
-                    aria-label="Prevega – Electronic Fund Transfer Switch"
-                  >
-                    <SplitText
-                      mode="lines"
-                      text="Prevega – Electronic Fund Transfer Switch"
-                    />
-                  </h3>
-                  <p className="product-story__desc" data-reveal-group>
-                    Electronic fund transfers depend on the efficient movement of transaction information between connected financial systems. Prevega is designed to support electronic fund transfer switching, transaction routing and financial system connectivity.
-                  </p>
-
-                  <ul className="product-story__features" data-reveal-group>
-                    <li>
-                      <span>01</span> High-availability electronic fund transfer switching
-                    </li>
-                    <li>
-                      <span>02</span> Intelligent transaction routing across connected rails
-                    </li>
-                    <li>
-                      <span>03</span> Seamless financial system &amp; interchange connectivity
-                    </li>
-                  </ul>
-
-                  <div className="product-story__cta" data-reveal-group>
-                    <a
-                      href="#footer"
-                      className="pill-btn pill-btn--orange scribble-host"
-                      data-magnetic
-                      data-cursor="PREVEGA"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        scrollToSection("#footer");
-                      }}
-                    >
-                      <span className="scribble-bg" aria-hidden="true">
-                        <svg viewBox="0 0 150 44" preserveAspectRatio="none">
-                          <path pathLength={1} d="M-4,22 C18,6 32,38 56,18 C80,-2 96,40 124,18 C136,8 144,28 154,20" />
-                        </svg>
-                      </span>
-                      <span className="pill-btn__content">Enquire About Prevega ↗</span>
-                    </a>
-                  </div>
-                </div>
-
-                <div className="product-story__visual">
-                  <div className="mask-frame" data-mask-reveal>
-                    <div className="dashboard-mock dashboard-mock--mars">
-                      <div className="dash-topbar">
-                        <div className="dash-dots">
-                          <span />
-                          <span />
-                          <span />
-                        </div>
-                        <span className="dash-title">PREVEGA // EFT SWITCH</span>
-                        <span className="dash-badge dash-badge--live">● ACTIVE ROUTING</span>
-                      </div>
-
-                      <div className="dash-kpis">
-                        <div className="dash-kpi" data-dash-el>
-                          <span>Core</span>
-                          <strong>EFT Switch</strong>
-                        </div>
-                        <div className="dash-kpi" data-dash-el>
-                          <span>Routing</span>
-                          <strong>Multi-Rail</strong>
-                        </div>
-                        <div className="dash-kpi" data-dash-el>
-                          <span>Connectivity</span>
-                          <strong>CBS + Schemes</strong>
-                        </div>
-                      </div>
-
-                      <div className="dash-table" data-dash-el>
-                        <div className="dash-table__row">
-                          <span>ISO 8583 / Financial Messaging</span>
-                          <span className="pill-ok">ROUTED</span>
-                          <strong>LOW LATENCY</strong>
-                        </div>
-                        <div className="dash-table__row">
-                          <span>Inter-System Connectivity</span>
-                          <span className="pill-ok">ONLINE</span>
-                          <strong>VERIFIED</strong>
                         </div>
                       </div>
                     </div>
@@ -2474,7 +2323,7 @@ export function App() {
                   Share your requirements with us, and our team will get in touch.
                 </p>
                 <div className="footer-pills" id="footer-pills" aria-label="Area of Interest">
-                  {["ReconPlus", "MARS", "Prevega", "Software Development", "System Integration", "Support"].map((pill) => (
+                  {["ReconPlus", "MARS", "Software Development", "System Integration", "Support"].map((pill) => (
                     <button
                       type="button"
                       key={pill}
