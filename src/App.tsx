@@ -1,5 +1,4 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
@@ -8,52 +7,23 @@ import { InteractiveDotGrid } from "./components/InteractiveDotGrid";
 import { SplitText } from "./components/SplitText";
 import { ChatBot } from "./components/ChatBot";
 import {
-  AboutHeritageExtra,
-  CareersCultureExtra,
-  PartnersStandardsExtra,
-  ProductsComparisonExtra,
-  ServicesMethodologyExtra,
-  SubpageHero,
-} from "./components/DedicatedPageExtra";
-import {
   ARCH_NODES,
   CAREER_ROLES,
   CLIENT_LOGOS,
   CORE_PILLARS,
+  INDUSTRIES_WE_SUPPORT,
+  OUR_EXPERTISE,
+  OUR_SERVICES,
   PARTNER_LOGOS,
-  WHAT_WE_OFFER,
+  WHAT_DRIVES_US,
+  WHY_EMPAY,
 } from "./data/empayData";
 
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.config({ ignoreMobileResize: true, limitCallbacks: true });
 
 const ABOUT_STATEMENT =
-  "Empay Software Solutions specializes in providing an array of cutting edge solutions and services for the financial services industry in the electronic and mobile payment verticals. Founded in 2008 by domain veterans.";
-
-const SECTION_TO_ROUTE: Record<string, string> = {
-  "#hero": "/",
-  "#about": "/about",
-  "#service": "/services",
-  "#pricing": "/products",
-  "#product-mars": "/products#product-mars",
-  "#product-reconplus": "/products#product-reconplus",
-  "#portfolio": "/clients",
-  "#partners": "/partners",
-  "#architecture": "/services#architecture",
-  "#career": "/careers",
-  "#footer": "/contact",
-};
-
-const VALID_ROUTES = new Set([
-  "/",
-  "/about",
-  "/services",
-  "/products",
-  "/clients",
-  "/partners",
-  "/careers",
-  "/contact",
-]);
+  "Understanding Finance. Building Technology That Works. Since 2008, Empay Software Solutions Private Limited has been working at the intersection of financial services and technology.";
 
 function renderLogoMark(name: string, _type?: "client" | "partner") {
   if (name === "Logo 1") {
@@ -159,19 +129,13 @@ export function App() {
   const [demoSubmitted, setDemoSubmitted] = useState(false);
 
   const lenisRef = useRef<Lenis | null>(null);
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const normalizedPath = location.pathname === "" ? "/" : location.pathname.replace(/\/+$/, "") || "/";
-  const currentRoute = VALID_ROUTES.has(normalizedPath) ? normalizedPath : "/";
-  const showAll = currentRoute === "/";
 
   const prefersReducedMotion = useMemo(
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     []
   );
 
-  // Preloader sequence + Lenis smooth scroll (runs once on mount)
+  // Preloader sequence + Lenis smooth scroll + GSAP ScrollTrigger choreography
   useEffect(() => {
     document.documentElement.classList.add("is-preloading");
 
@@ -195,27 +159,21 @@ export function App() {
 
     const animateHeroEntrance = () => {
       if (prefersReducedMotion) return;
-      if (document.querySelector(".hero__eyebrow-chip")) {
-        gsap.fromTo(
-          ".hero__eyebrow-chip",
-          { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }
-        );
-      }
-      if (document.querySelector(".title-word")) {
-        gsap.fromTo(
-          ".title-word",
-          { yPercent: 110, opacity: 0 },
-          { yPercent: 0, opacity: 1, duration: 0.95, stagger: 0.06, ease: "power4.out", delay: 0.08 }
-        );
-      }
-      if (document.querySelector(".hero__editorial-sub, .hero__product-capsule-dock")) {
-        gsap.fromTo(
-          ".hero__editorial-sub, .hero__product-capsule-dock",
-          { y: 25, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.85, stagger: 0.1, delay: 0.25, ease: "power3.out" }
-        );
-      }
+      gsap.fromTo(
+        ".hero__eyebrow-chip",
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }
+      );
+      gsap.fromTo(
+        ".title-word",
+        { yPercent: 110, opacity: 0 },
+        { yPercent: 0, opacity: 1, duration: 0.95, stagger: 0.06, ease: "power4.out", delay: 0.08 }
+      );
+      gsap.fromTo(
+        ".hero__editorial-sub, .hero__product-capsule-dock",
+        { y: 25, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.85, stagger: 0.1, delay: 0.25, ease: "power3.out" }
+      );
     };
 
     // Simple 900ms editorial preloader
@@ -248,38 +206,6 @@ export function App() {
         }
       };
       preRafId = requestAnimationFrame(tick);
-    }
-
-    return () => {
-      if (preRafId !== null) cancelAnimationFrame(preRafId);
-      if (leaveTimerId !== null) window.clearTimeout(leaveTimerId);
-      if (removeTimerId !== null) window.clearTimeout(removeTimerId);
-      if (tickerFn) gsap.ticker.remove(tickerFn);
-      lenis?.destroy();
-      lenisRef.current = null;
-      document.documentElement.classList.remove("is-preloading");
-    };
-  }, [prefersReducedMotion]);
-
-  // GSAP ScrollTrigger choreography (re-runs cleanly on every dedicated route)
-  useEffect(() => {
-    const isLightInitial = currentRoute === "/" || currentRoute === "/about";
-    document.documentElement.setAttribute("data-theme", isLightInitial ? "light" : "dark");
-
-    if (location.hash) {
-      window.setTimeout(() => {
-        const el = document.querySelector(location.hash);
-        if (el) {
-          if (lenisRef.current) {
-            lenisRef.current.scrollTo(location.hash, { duration: 1.0 });
-          } else {
-            el.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
-          }
-        }
-      }, 100);
-    } else {
-      window.scrollTo(0, 0);
-      lenisRef.current?.scrollTo(0, { immediate: true });
     }
 
     // GSAP ScrollTrigger animations inside gsap.context for clean unmount cleanup
@@ -329,7 +255,7 @@ export function App() {
           onEnter: () => document.documentElement.setAttribute("data-theme", theme),
           onEnterBack: () => document.documentElement.setAttribute("data-theme", theme),
           onLeaveBack: () => {
-            if (sec.id === "service" && currentRoute === "/") {
+            if (sec.id === "service") {
               document.documentElement.setAttribute("data-theme", "light");
             }
           },
@@ -549,15 +475,17 @@ export function App() {
       );
     });
 
-    const refreshTimer = window.setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 120);
-
     return () => {
-      window.clearTimeout(refreshTimer);
+      if (preRafId !== null) cancelAnimationFrame(preRafId);
+      if (leaveTimerId !== null) window.clearTimeout(leaveTimerId);
+      if (removeTimerId !== null) window.clearTimeout(removeTimerId);
       ctx.revert();
+      if (tickerFn) gsap.ticker.remove(tickerFn);
+      lenis?.destroy();
+      lenisRef.current = null;
+      document.documentElement.classList.remove("is-preloading");
     };
-  }, [currentRoute, location.hash, prefersReducedMotion]);
+  }, [prefersReducedMotion]);
 
   // Desktop magnetic buttons & custom orb cursor
   useEffect(() => {
@@ -684,7 +612,7 @@ export function App() {
       if (rafId !== null) cancelAnimationFrame(rafId);
       cleanups.forEach((fn) => fn());
     };
-  }, [currentRoute, prefersReducedMotion]);
+  }, [prefersReducedMotion]);
 
   // Menu drawer close handler with deferred depth reset
   const closeMenu = () => {
@@ -747,42 +675,10 @@ export function App() {
 
   const scrollToSection = (target: string | number) => {
     const run = () => {
-      if (typeof target === "number") {
-        if (lenisRef.current) {
-          lenisRef.current.scrollTo(target, { duration: 1.2 });
-        } else {
-          window.scrollTo({ top: target, behavior: prefersReducedMotion ? "auto" : "smooth" });
-        }
-        return;
-      }
-
-      const routeTarget = target.startsWith("/") ? target : SECTION_TO_ROUTE[target];
-      if (routeTarget) {
-        const [pathPart, hashPart] = routeTarget.split("#");
-        const targetRoute = pathPart || "/";
-        if (currentRoute === targetRoute) {
-          if (hashPart) {
-            const hashSel = `#${hashPart}`;
-            if (lenisRef.current) {
-              lenisRef.current.scrollTo(hashSel, { duration: 1.2 });
-            } else {
-              document
-                .querySelector(hashSel)
-                ?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
-            }
-          } else if (lenisRef.current) {
-            lenisRef.current.scrollTo(0, { duration: 1.0 });
-          } else {
-            window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
-          }
-        } else {
-          navigate(routeTarget);
-        }
-        return;
-      }
-
       if (lenisRef.current) {
         lenisRef.current.scrollTo(target, { duration: 1.2 });
+      } else if (typeof target === "number") {
+        window.scrollTo({ top: target, behavior: prefersReducedMotion ? "auto" : "smooth" });
       } else {
         document
           .querySelector(target)
@@ -1088,7 +984,7 @@ export function App() {
                       scrollToSection("#portfolio");
                     }}
                   >
-                    <span className="stacked-menu__title">Clients</span>
+                    <span className="stacked-menu__title">Industries</span>
                     <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
                   </a>
                 </li>
@@ -1138,7 +1034,7 @@ export function App() {
                   <span className="status-dot" />
                   <span>SmartCity, Kochi · Est. 2008</span>
                 </div>
-                <p>Connect with Empay Software Solutions Private Limited at solutions@empaysoft.com or 0484 486 5189.</p>
+                <p>Connect with Empay Software Solutions Private Limited at solutions@empaysoft.com or 9037756027.</p>
                 <a
                   href="#footer"
                   className="pill-btn pill-btn--orange pill-btn--sm"
@@ -1153,8 +1049,24 @@ export function App() {
             </div>
 
             <div className="stacked-menu__col stacked-menu__col--sub" aria-hidden={menuDepth === 0}>
-              <span className="eyebrow eyebrow--orange">IT&apos;S WHAT WE DO</span>
+              <span className="eyebrow eyebrow--orange">OUR PRODUCTS</span>
               <ul className="stacked-menu__list">
+                <li>
+                  <a
+                    href="#product-reconplus"
+                    className="stacked-menu__link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection("#product-reconplus");
+                    }}
+                  >
+                    <div>
+                      <span className="stacked-menu__title">ReconPlus</span>
+                      <small>Card Transaction Reconciliation System</small>
+                    </div>
+                    <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
+                  </a>
+                </li>
                 <li>
                   <a
                     href="#product-mars"
@@ -1173,16 +1085,16 @@ export function App() {
                 </li>
                 <li>
                   <a
-                    href="#product-reconplus"
+                    href="#product-prevega"
                     className="stacked-menu__link"
                     onClick={(e) => {
                       e.preventDefault();
-                      scrollToSection("#product-reconplus");
+                      scrollToSection("#product-prevega");
                     }}
                   >
                     <div>
-                      <span className="stacked-menu__title">ReconPlus</span>
-                      <small>Card Transaction Reconciliation System</small>
+                      <span className="stacked-menu__title">Prevega</span>
+                      <small>Electronic Fund Transfer Switch</small>
                     </div>
                     <span className="stacked-menu__badge stacked-menu__badge--solid">↗</span>
                   </a>
@@ -1206,141 +1118,11 @@ export function App() {
       </aside>
 
       {/* MAIN VIEWPORT SHELL */}
-      <div
-        className={`page-shell ${currentRoute === "/contact" ? "is-contact-page" : ""}`}
-        id="page-shell"
-      >
-        <main id="main-content" className={currentRoute !== "/" ? "is-subpage" : ""}>
-          {currentRoute === "/about" && (
-            <SubpageHero
-              theme="light"
-              eyebrow="ABOUT EMPAY // EST. 2008"
-              badge="PA-DSS CERTIFIED"
-              word1="BUILT"
-              word2="BY"
-              accentWord="FINTECH"
-              word4="VETERANS."
-              pitch="Since 2008, Empay Software Solutions has engineered mission-critical payment acquiring, transaction switching, and automated reconciliation platforms from SmartCity Kochi SEZ."
-              primaryLabel="Explore Products ↗"
-              primaryTarget="#pricing"
-              secondaryLabel="Our Mission ↓"
-              secondaryTarget="#technology"
-              onNavigate={scrollToSection}
-            />
-          )}
-
-          {currentRoute === "/services" && (
-            <SubpageHero
-              theme="dark"
-              eyebrow="WHAT WE OFFER // SERVICES"
-              badge="END-TO-END DELIVERY"
-              word1="ENTERPRISE"
-              word2="PAYMENT"
-              accentWord="ENGINEERING"
-              word4="CONSULTING."
-              pitch="From business analysis and switch architecture to scheme certification and 24/7 production support, our team delivers streamlined, flexible, and low-cost payment systems."
-              primaryLabel="Request Consultation ↗"
-              primaryTarget="#footer"
-              secondaryLabel="View Architecture ↓"
-              secondaryTarget="#architecture"
-              onNavigate={scrollToSection}
-            />
-          )}
-
-          {currentRoute === "/products" && (
-            <SubpageHero
-              theme="dark"
-              eyebrow="FLAGSHIP PLATFORMS // PA-DSS"
-              badge="MARS & RECONPLUS"
-              word1="AUTONOMOUS"
-              word2="ACQUIRING."
-              accentWord="ZERO-ERROR"
-              word4="RECON."
-              pitch="Discover MARS for complete merchant onboarding, POS/IPG acquiring, and scheme clearing, alongside ReconPlus for modular multi-entity transaction reconciliation."
-              primaryLabel="Request Live Demo ↗"
-              primaryTarget="#footer"
-              secondaryLabel="Explore MARS ↓"
-              secondaryTarget="#product-mars"
-              onNavigate={scrollToSection}
-            />
-          )}
-
-          {currentRoute === "/clients" && (
-            <SubpageHero
-              theme="dark"
-              eyebrow="OUR PRESTIGIOUS CLIENTS"
-              badge="BANKS & PROCESSORS"
-              word1="POWERING"
-              word2="INDUSTRY"
-              accentWord="PAYMENT"
-              word4="PIONEERS."
-              pitch="Trusted by issuer banks, acquirer banks, and payment service providers across electronic and mobile payment verticals to deliver reliable, compliant transaction processing."
-              primaryLabel="Partner With Us ↗"
-              primaryTarget="#footer"
-              secondaryLabel="Client Ecosystem ↓"
-              secondaryTarget="#portfolio"
-              onNavigate={scrollToSection}
-            />
-          )}
-
-          {currentRoute === "/partners" && (
-            <SubpageHero
-              theme="dark"
-              eyebrow="GLOBAL SCHEMES & ALLIANCES"
-              badge="MULTI-RAIL CERTIFIED"
-              word1="CERTIFIED"
-              word2="SCHEME"
-              accentWord="NETWORK"
-              word4="ALLIANCES."
-              pitch="Seamless clearing, settlement, and compliance across Visa, MasterCard, RuPay, and American Express backed by PA-DSS certified application security."
-              primaryLabel="Business Enquiries ↗"
-              primaryTarget="#footer"
-              secondaryLabel="View Ecosystem ↓"
-              secondaryTarget="#partners"
-              onNavigate={scrollToSection}
-            />
-          )}
-
-          {currentRoute === "/careers" && (
-            <SubpageHero
-              theme="dark"
-              eyebrow="CAREERS AT EMPAY // KOCHI SEZ"
-              badge="NOW HIRING"
-              word1="ENGINEER"
-              word2="MISSION"
-              accentWord="CRITICAL"
-              word4="PAYMENTS."
-              pitch="Join our core engineering and operations teams at Lulu IT Twin Tower, SmartCity (Kochi) SEZ to build high-volume acquiring and reconciliation software."
-              primaryLabel="View Open Roles ↓"
-              primaryTarget="#career-list"
-              secondaryLabel="Contact HR ↗"
-              secondaryTarget="#footer"
-              onNavigate={scrollToSection}
-            />
-          )}
-
-          {currentRoute === "/contact" && (
-            <SubpageHero
-              theme="dark"
-              eyebrow="CONNECT WITH EMPAY"
-              badge="SMARTCITY, KOCHI"
-              word1="LET'S BUILD"
-              word2="YOUR"
-              accentWord="PAYMENT"
-              word4="FUTURE."
-              pitch="Reach out to our solutions specialists at solutions@empaysoft.com or 0484 486 5189 for product demos, architecture consulting, and enterprise onboarding."
-              primaryLabel="Send Enquiry ↓"
-              primaryTarget="#demo-form"
-              secondaryLabel="Explore Products →"
-              secondaryTarget="#pricing"
-              onNavigate={scrollToSection}
-            />
-          )}
-
+      <div className="page-shell" id="page-shell">
+        <main id="main-content">
           {/* =====================================================
               S0: PRODUCT-BASED SALES HERO (Primary InteractiveDotGrid)
               ===================================================== */}
-          {showAll && (
           <section className="hero" id="hero" data-theme-trigger="light">
             <InteractiveDotGrid
               theme="light"
@@ -1370,32 +1152,32 @@ export function App() {
 
                 <h1
                   className="hero__cinematic-title"
-                  aria-label="Next-Gen Payments. Intelligent Reconciliation."
+                  aria-label="Technology That Keeps Financial Transactions Moving."
                 >
                   <span className="title-row">
-                    <span className="title-word">NEXT-GEN</span>
-                    <span className="title-word title-word--ghost">PAYMENTS.</span>
+                    <span className="title-word">TECHNOLOGY</span>
+                    <span className="title-word title-word--ghost">THAT KEEPS</span>
                   </span>
                   <span className="title-row title-row--shift">
-                    <span className="title-word title-word--accent">INTELLIGENT</span>
-                    <span className="title-word">RECONCILIATION.</span>
+                    <span className="title-word title-word--accent">FINANCIAL</span>
+                    <span className="title-word">TRANSACTIONS MOVING.</span>
                   </span>
                 </h1>
 
                 <div className="hero__editorial-sub">
                   <p className="hero__pitch">
-                    Empowering banks, acquirers, and financial processors with mission-critical transaction switching, automated scheme clearing, and zero-discrepancy reconciliation.
+                    Behind every successful financial transaction is technology that makes it work. At Empay, we build specialised software solutions that help financial institutions manage payments, reconciliation and financial operations with greater efficiency.
                   </p>
 
                   <div className="hero__cta-cluster">
                     <a
-                      href="#footer"
+                      href="#pricing"
                       className="pill-btn pill-btn--orange scribble-host"
                       data-magnetic
-                      data-cursor="DEMO"
+                      data-cursor="SOLUTIONS"
                       onClick={(e) => {
                         e.preventDefault();
-                        scrollToSection("#footer");
+                        scrollToSection("#pricing");
                       }}
                     >
                       <span className="scribble-bg" aria-hidden="true">
@@ -1403,52 +1185,26 @@ export function App() {
                           <path pathLength={1} d="M-4,22 C18,6 32,38 56,18 C80,-2 96,40 124,18 C142,6 156,28 174,20" />
                         </svg>
                       </span>
-                      <span className="pill-btn__content">Request Live Demo ↗</span>
+                      <span className="pill-btn__content">Explore Our Solutions ↗</span>
                     </a>
 
                     <a
-                      href="#pricing"
+                      href="#footer"
                       className="ghost-pill-btn"
                       data-magnetic
-                      data-cursor="PRODUCTS"
+                      data-cursor="CONTACT"
                       onClick={(e) => {
                         e.preventDefault();
-                        scrollToSection("#pricing");
+                        scrollToSection("#footer");
                       }}
                     >
-                      <span>Explore Products ↓</span>
+                      <span>Talk to Our Team ↓</span>
                     </a>
                   </div>
                 </div>
 
-                {/* Floating Twin-Product Capsule Dock */}
+                {/* Floating Product Capsule Dock */}
                 <div className="hero__product-capsule-dock" role="navigation" aria-label="Flagship Products">
-                  <a
-                    href="#product-mars"
-                    className="hero-capsule"
-                    data-magnetic
-                    data-cursor="MARS"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollToSection("#product-mars");
-                    }}
-                  >
-                    <div className="hero-capsule__meta">
-                      <span className="hero-capsule__num">01</span>
-                      <div className="hero-capsule__info">
-                        <strong>MARS</strong>
-                        <small>Merchant Acquiring &amp; Billing</small>
-                      </div>
-                    </div>
-                    <div className="hero-capsule__tags">
-                      <span>POS &amp; IPG</span>
-                      <span>Multi-Scheme</span>
-                    </div>
-                    <span className="hero-capsule__arrow" aria-hidden="true">↗</span>
-                  </a>
-
-                  <div className="hero-capsule-divider" aria-hidden="true" />
-
                   <a
                     href="#product-reconplus"
                     className="hero-capsule"
@@ -1460,7 +1216,7 @@ export function App() {
                     }}
                   >
                     <div className="hero-capsule__meta">
-                      <span className="hero-capsule__num">02</span>
+                      <span className="hero-capsule__num">01</span>
                       <div className="hero-capsule__info">
                         <strong>ReconPlus</strong>
                         <small>Card Transaction Reconciliation</small>
@@ -1468,7 +1224,59 @@ export function App() {
                     </div>
                     <div className="hero-capsule__tags">
                       <span>Multi-Source</span>
-                      <span>Auto GL</span>
+                      <span>Discrepancy</span>
+                    </div>
+                    <span className="hero-capsule__arrow" aria-hidden="true">↗</span>
+                  </a>
+
+                  <div className="hero-capsule-divider" aria-hidden="true" />
+
+                  <a
+                    href="#product-mars"
+                    className="hero-capsule"
+                    data-magnetic
+                    data-cursor="MARS"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection("#product-mars");
+                    }}
+                  >
+                    <div className="hero-capsule__meta">
+                      <span className="hero-capsule__num">02</span>
+                      <div className="hero-capsule__info">
+                        <strong>MARS</strong>
+                        <small>Merchant Acquiring &amp; Recon</small>
+                      </div>
+                    </div>
+                    <div className="hero-capsule__tags">
+                      <span>POS &amp; IPG</span>
+                      <span>Acquiring</span>
+                    </div>
+                    <span className="hero-capsule__arrow" aria-hidden="true">↗</span>
+                  </a>
+
+                  <div className="hero-capsule-divider" aria-hidden="true" />
+
+                  <a
+                    href="#product-prevega"
+                    className="hero-capsule"
+                    data-magnetic
+                    data-cursor="PREVEGA"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection("#product-prevega");
+                    }}
+                  >
+                    <div className="hero-capsule__meta">
+                      <span className="hero-capsule__num">03</span>
+                      <div className="hero-capsule__info">
+                        <strong>Prevega</strong>
+                        <small>Electronic Fund Transfer Switch</small>
+                      </div>
+                    </div>
+                    <div className="hero-capsule__tags">
+                      <span>EFT Switch</span>
+                      <span>Routing</span>
                     </div>
                     <span className="hero-capsule__arrow" aria-hidden="true">↗</span>
                   </a>
@@ -1476,19 +1284,16 @@ export function App() {
               </div>
             </div>
           </section>
-          )}
 
           {/* =====================================================
-              S1: ABOUT EMPAY (Clean background, NO dot grid)
+              S1: INTRODUCTION (Clean background, NO dot grid)
               ===================================================== */}
-          {(showAll || currentRoute === "/about") && (
-          <>
           <section className="about-scrub" id="about" data-theme-trigger="light">
             <div className="about-scrub__pin">
               <div className="container about-scrub__inner">
                 <div className="about-scrub__eyebrow-row">
-                  <span className="pill-eyebrow">ABOUT EMPAY</span>
-                  <span className="eyebrow">EMPAY SOFTWARE SOLUTIONS PRIVATE LIMITED</span>
+                  <span className="pill-eyebrow">INTRODUCTION</span>
+                  <span className="eyebrow">EMPAY SOFTWARE SOLUTIONS PRIVATE LIMITED · SINCE 2008</span>
                 </div>
 
                 <div className="about-scrub__text-wrap">
@@ -1523,28 +1328,53 @@ export function App() {
                     </span>
                   </p>
                 </div>
+
+                <div style={{ marginTop: "2rem", display: "grid", gap: "1rem", maxWidth: "78ch" }}>
+                  <p style={{ color: "var(--ink-muted)", fontSize: "1.02rem", lineHeight: 1.65 }}>
+                    We understand that financial operations involve more than processing transactions. They require accuracy, coordination, reliable systems and a clear understanding of how different processes connect. With this understanding, we develop specialised software solutions for banks, financial institutions and organisations operating in the electronic payments industry.
+                  </p>
+                  <p style={{ color: "var(--ink-muted)", fontSize: "1.02rem", lineHeight: 1.65 }}>
+                    Our focus is simple: understand the challenge, build the right technology and make complex financial operations easier to manage.
+                  </p>
+                  <div style={{ marginTop: "0.5rem" }}>
+                    <a
+                      href="#technology"
+                      className="pill-btn pill-btn--orange scribble-host"
+                      data-magnetic
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollToSection("#technology");
+                      }}
+                    >
+                      <span className="pill-btn__content">Discover Empay ↗</span>
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
 
           {/* =====================================================
-              S2: CORE PILLARS (Architecture, Services & Software)
+              S2: ABOUT US (Vision, Mission & What Drives Us)
               ===================================================== */}
           <section className="statement-section" id="technology" data-theme-trigger="light">
             <div className="container statement-section__inner">
-              <span className="eyebrow">OUR MISSION</span>
+              <span className="eyebrow">ABOUT US</span>
               <h2
                 className="editorial-h2"
                 data-split="lines"
                 data-scrub-lines
-                aria-label="Our mission is to provide path breaking and effective solutions in transaction processing and payment services to enable our clients to become pioneers in the industry."
+                aria-label="Built on Financial Understanding. Driven by Technology."
               >
                 <SplitText
                   mode="lines"
-                  text="Path-breaking transaction processing and payment solutions enabling our clients to become"
-                  accentText="industry pioneers."
+                  text="Built on Financial Understanding."
+                  accentText="Driven by Technology."
                 />
               </h2>
+              <p style={{ color: "var(--ink-muted)", fontSize: "1.05rem", lineHeight: 1.7, maxWidth: "74ch", marginTop: "1.25rem" }}>
+                Since 2008, Empay Software Solutions Private Limited has focused on developing software solutions for the banking, financial services and electronic payments industry. Over the years, our work has centred on understanding the technology behind financial transactions and the operational processes that keep financial institutions running. We believe effective financial technology starts with understanding the business behind it—creating technology that addresses real operational requirements and helps financial institutions manage their processes more effectively.
+              </p>
               <div className="statement-section__grid">
                 {CORE_PILLARS.map((pillar) => (
                   <div className="statement-metric" data-reveal-group key={pillar.title}>
@@ -1553,31 +1383,40 @@ export function App() {
                     <span className="statement-metric__label">{pillar.body}</span>
                   </div>
                 ))}
+                <div className="statement-metric" data-reveal-group>
+                  <span className="statement-metric__num">What Drives Us</span>
+                  <strong style={{ fontSize: "1.02rem" }}>Our Core Principles</strong>
+                  <ul style={{ listStyle: "none", padding: 0, margin: "0.35rem 0 0", display: "grid", gap: "0.35rem" }}>
+                    {WHAT_DRIVES_US.map((item) => (
+                      <li key={item} className="statement-metric__label" style={{ display: "flex", alignItems: "baseline", gap: "0.45rem" }}>
+                        <span style={{ color: "var(--orange)", fontWeight: 700 }}>→</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
           </section>
-          </>
-          )}
 
           {/* =====================================================
-              S3: WHAT WE OFFER / SERVICES
+              S3: OUR EXPERTISE & OUR SERVICES
               ===================================================== */}
-          {(showAll || currentRoute === "/services") && (
           <section className="expertise-section" id="service" data-theme-trigger="dark">
             <div className="container">
               <div className="section-head">
                 <div>
-                  <span className="pill-eyebrow">WHAT WE OFFER</span>
+                  <span className="pill-eyebrow">OUR EXPERTISE</span>
                   <h2
                     className="section-h2"
                     data-split="chars"
-                    aria-label="Comprehensive solutions across electronic & mobile payments"
+                    aria-label="Where Financial Knowledge Meets Technology."
                   >
-                    <SplitText mode="chars" text="Comprehensive solutions across electronic & mobile payments" />
+                    <SplitText mode="chars" text="Where Financial Knowledge Meets Technology." />
                   </h2>
                 </div>
                 <p className="section-lead" data-reveal-group>
-                  Our team has extensive experience in business analysis, product development, application development and project management in the payment and financial services domains.
+                  The financial ecosystem depends on multiple processes working together. From processing payments to reconciling transactions, every stage plays an important role. Empay brings technology capabilities to some of the most essential areas of financial operations.
                 </p>
               </div>
 
@@ -1586,7 +1425,7 @@ export function App() {
                   <div className="expertise-panel">
                     <div className="expertise-panel__top">
                       <span className="expertise-panel__index">01</span>
-                      <h3>Acquiring, Switching &amp; Card Systems</h3>
+                      <h3>Our Expertise Across Financial Operations</h3>
                     </div>
                     <svg className="expertise-sketch" viewBox="0 0 280 110" fill="none" aria-hidden="true">
                       <path
@@ -1606,15 +1445,15 @@ export function App() {
                         scrollToSection("#pricing");
                       }}
                     >
-                      Explore Products →
+                      Discover Our Products →
                     </a>
                   </div>
                   <div className="expertise-cards">
-                    {WHAT_WE_OFFER.slice(0, 5).map((srv) => (
-                      <div className="cap-card" key={srv.name}>
+                    {OUR_EXPERTISE.map((exp) => (
+                      <div className="cap-card" key={exp.name}>
                         <span className="cap-card__badge">→</span>
-                        <h4>{srv.name}</h4>
-                        <p>{srv.desc}</p>
+                        <h4>{exp.name}</h4>
+                        <p>{exp.desc}</p>
                       </div>
                     ))}
                   </div>
@@ -1624,30 +1463,29 @@ export function App() {
                   <div className="expertise-panel">
                     <div className="expertise-panel__top">
                       <span className="expertise-panel__index">02</span>
-                      <h3>Reconciliation, Clearing &amp; Processing</h3>
+                      <h3>Technology Services That Take Your Business Forward.</h3>
                     </div>
-                    <svg className="expertise-sketch" viewBox="0 0 280 110" fill="none" aria-hidden="true">
-                      <rect className="draw-path" x="18" y="20" width="90" height="70" rx="10" stroke="#0A1628" strokeWidth="2.5" />
-                      <rect className="draw-path" x="172" y="20" width="90" height="70" rx="10" stroke="#0A1628" strokeWidth="2.5" />
-                      <path className="draw-path" d="M108 55 H172" stroke="#FFFFFF" strokeWidth="2.5" strokeDasharray="5 5" />
-                    </svg>
+                    <p style={{ fontSize: "0.92rem", lineHeight: 1.55, color: "rgba(10, 22, 40, 0.85)", margin: "0.5rem 0 0" }}>
+                      Good technology is not just about building software. It is about understanding what a business needs and making sure the technology works in its environment—from business requirements to technology solutions.
+                    </p>
                     <a
-                      href="#product-reconplus"
+                      href="#footer"
                       className="expertise-panel__link"
                       onClick={(e) => {
                         e.preventDefault();
-                        scrollToSection("#product-reconplus");
+                        scrollToSection("#footer");
                       }}
                     >
-                      Explore ReconPlus →
+                      Explore Our Services →
                     </a>
                   </div>
                   <div className="expertise-cards">
-                    {WHAT_WE_OFFER.slice(5).map((srv) => (
+                    {OUR_SERVICES.map((srv) => (
                       <div className="cap-card" key={srv.name}>
                         <span className="cap-card__badge">→</span>
                         <h4>{srv.name}</h4>
                         <p>{srv.desc}</p>
+                        <p style={{ marginTop: "0.45rem", fontSize: "0.84rem", opacity: 0.78 }}>{srv.detail}</p>
                       </div>
                     ))}
                   </div>
@@ -1655,24 +1493,24 @@ export function App() {
               </div>
             </div>
           </section>
-          )}
 
           {/* =====================================================
-              S4: PRODUCTS — "It's what we do."
+              S4: OUR PRODUCTS (ReconPlus, MARS, Prevega)
               ===================================================== */}
-          {(showAll || currentRoute === "/products") && (
-          <>
           <section className="products-section" id="pricing" data-theme-trigger="dark">
             <div className="container">
               <div className="section-head section-head--center">
-                <span className="pill-eyebrow">IT&apos;S WHAT WE DO.</span>
+                <span className="pill-eyebrow">OUR PRODUCTS</span>
                 <h2
                   className="section-h2 section-h2--lg"
                   data-split="chars"
-                  aria-label="PA-DSS Certified Payment & Reconciliation Products"
+                  aria-label="Purpose-Built Products for Complex Financial Operations."
                 >
-                  <SplitText mode="chars" text="PA-DSS Certified Payment & Reconciliation Products" />
+                  <SplitText mode="chars" text="Purpose-Built Products for Complex Financial Operations." />
                 </h2>
+                <p className="section-lead" style={{ maxWidth: "68ch", marginInline: "auto", marginTop: "1rem", textAlign: "center" }}>
+                  The right technology for essential financial operations. Every financial institution has different operational requirements—our specialised products address card payments, merchant acquiring, reconciliation and electronic fund transfers.
+                </p>
               </div>
 
               {/* PRODUCT 01: MARS (Selected Highlight #1 with InteractiveDotGrid) */}
@@ -1958,23 +1796,150 @@ export function App() {
                   </div>
                 </div>
               </article>
+
+              {/* PRODUCT 03: Prevega (Electronic Fund Transfer Switch) */}
+              <article className="product-story product-story--mars" id="product-prevega">
+                <InteractiveDotGrid
+                  theme="dark"
+                  spacing={24}
+                  radius={112}
+                  maxPush={32}
+                  baseDotRadius={1.2}
+                  maxDotRadius={2.05}
+                  intensity={0.85}
+                />
+
+                <div className="product-story__copy">
+                  <div className="product-story__meta">
+                    <span className="eyebrow eyebrow--orange">PRODUCT 03 // PREVEGA</span>
+                    <span className="product-tag">Electronic Fund Transfer Switch</span>
+                  </div>
+                  <h3
+                    className="product-story__title"
+                    data-split="lines"
+                    aria-label="Prevega – Electronic Fund Transfer Switch"
+                  >
+                    <SplitText
+                      mode="lines"
+                      text="Prevega – Electronic Fund Transfer Switch"
+                    />
+                  </h3>
+                  <p className="product-story__desc" data-reveal-group>
+                    Electronic fund transfers depend on the efficient movement of transaction information between connected financial systems. Prevega is designed to support electronic fund transfer switching, transaction routing and financial system connectivity.
+                  </p>
+
+                  <ul className="product-story__features" data-reveal-group>
+                    <li>
+                      <span>01</span> High-availability electronic fund transfer switching
+                    </li>
+                    <li>
+                      <span>02</span> Intelligent transaction routing across connected rails
+                    </li>
+                    <li>
+                      <span>03</span> Seamless financial system &amp; interchange connectivity
+                    </li>
+                  </ul>
+
+                  <div className="product-story__cta" data-reveal-group>
+                    <a
+                      href="#footer"
+                      className="pill-btn pill-btn--orange scribble-host"
+                      data-magnetic
+                      data-cursor="PREVEGA"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollToSection("#footer");
+                      }}
+                    >
+                      <span className="scribble-bg" aria-hidden="true">
+                        <svg viewBox="0 0 150 44" preserveAspectRatio="none">
+                          <path pathLength={1} d="M-4,22 C18,6 32,38 56,18 C80,-2 96,40 124,18 C136,8 144,28 154,20" />
+                        </svg>
+                      </span>
+                      <span className="pill-btn__content">Enquire About Prevega ↗</span>
+                    </a>
+                  </div>
+                </div>
+
+                <div className="product-story__visual">
+                  <div className="mask-frame" data-mask-reveal>
+                    <div className="dashboard-mock dashboard-mock--mars">
+                      <div className="dash-topbar">
+                        <div className="dash-dots">
+                          <span />
+                          <span />
+                          <span />
+                        </div>
+                        <span className="dash-title">PREVEGA // EFT SWITCH</span>
+                        <span className="dash-badge dash-badge--live">● ACTIVE ROUTING</span>
+                      </div>
+
+                      <div className="dash-kpis">
+                        <div className="dash-kpi" data-dash-el>
+                          <span>Core</span>
+                          <strong>EFT Switch</strong>
+                        </div>
+                        <div className="dash-kpi" data-dash-el>
+                          <span>Routing</span>
+                          <strong>Multi-Rail</strong>
+                        </div>
+                        <div className="dash-kpi" data-dash-el>
+                          <span>Connectivity</span>
+                          <strong>CBS + Schemes</strong>
+                        </div>
+                      </div>
+
+                      <div className="dash-table" data-dash-el>
+                        <div className="dash-table__row">
+                          <span>ISO 8583 / Financial Messaging</span>
+                          <span className="pill-ok">ROUTED</span>
+                          <strong>LOW LATENCY</strong>
+                        </div>
+                        <div className="dash-table__row">
+                          <span>Inter-System Connectivity</span>
+                          <span className="pill-ok">ONLINE</span>
+                          <strong>VERIFIED</strong>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              {/* Closing Product CTA */}
+              <div style={{ textAlign: "center", marginTop: "3.5rem", display: "grid", gap: "1rem", justifyItems: "center" }}>
+                <p style={{ color: "rgba(255,255,255,0.8)", fontSize: "1.08rem", maxWidth: "60ch" }}>
+                  Looking for a solution that fits your financial technology requirements? Let&apos;s discuss how our products can support your operations.
+                </p>
+                <a
+                  href="#footer"
+                  className="pill-btn pill-btn--orange scribble-host"
+                  data-magnetic
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection("#footer");
+                  }}
+                >
+                  <span className="pill-btn__content">Discover Our Products ↗</span>
+                </a>
+              </div>
             </div>
           </section>
 
           {/* =====================================================
-              S5: END-TO-END PAYMENT LIFECYCLE (Clean background, NO dot grid)
+              S5: WHY EMPAY (Horizontal Scroll Cards)
               ===================================================== */}
           <section className="hscroll-section" id="business" data-theme-trigger="dark">
             <div className="hscroll-section__sticky">
               <div className="container hscroll-section__head">
                 <div>
-                  <span className="pill-eyebrow">BUILT FOR FINANCIAL SERVICES</span>
+                  <span className="pill-eyebrow">WHY EMPAY</span>
                   <h2
                     className="section-h2"
                     data-split="chars"
-                    aria-label="Streamlined, robust and low-cost payment systems"
+                    aria-label="A Technology Partner That Understands Finance."
                   >
-                    <SplitText mode="chars" text="Streamlined, robust and low-cost payment systems" />
+                    <SplitText mode="chars" text="A Technology Partner That Understands Finance." />
                   </h2>
                 </div>
                 <div className="hscroll-progress-wrap">
@@ -1986,80 +1951,53 @@ export function App() {
 
               <div className="hscroll-viewport">
                 <div className="hscroll-track" id="hscroll-track">
-                  <article className="hcard">
-                    <span className="hcard__num">01</span>
-                    <h3>Architecture &amp; Consulting</h3>
-                    <p>Design mission-critical payment systems that are streamlined, efficient, robust, flexible, and low cost.</p>
-                    <span className="hcard__meta">PAYMENT ARCHITECTURE</span>
-                  </article>
-
-                  <span className="hcard-operator" aria-hidden="true">
-                    +
-                  </span>
-
-                  <article className="hcard">
-                    <span className="hcard__num">02</span>
-                    <h3>MARS Merchant Acquiring</h3>
-                    <p>PA-DSS Certified merchant onboarding, POS/IPG processing, MDR billing, association clearing files, and GL entries.</p>
-                    <span className="hcard__meta">MERCHANT LIFECYCLE</span>
-                  </article>
-
-                  <span className="hcard-operator" aria-hidden="true">
-                    +
-                  </span>
-
-                  <article className="hcard">
-                    <span className="hcard__num">03</span>
-                    <h3>ReconPlus Modularity</h3>
-                    <p>PA-DSS Certified reconciliation across multiple entities &amp; sources for Service Providers, Issuer and Acquirer Banks.</p>
-                    <span className="hcard__meta">MULTI-SOURCE RECON</span>
-                  </article>
-
-                  <span className="hcard-operator" aria-hidden="true">
-                    =
-                  </span>
-
-                  <article className="hcard hcard--accent">
-                    <span className="hcard__num">04</span>
-                    <h3>Clearing &amp; Settlement</h3>
-                    <p>Automate multi-scheme settlement verification, merchant statements, and compliant General Ledger posting.</p>
-                    <span className="hcard__meta">SETTLEMENT &amp; GL</span>
-                  </article>
+                  {WHY_EMPAY.map((item, idx) => (
+                    <div key={item.num} style={{ display: "contents" }}>
+                      <article className={`hcard ${idx === WHY_EMPAY.length - 1 ? "hcard--accent" : ""}`}>
+                        <span className="hcard__num">{item.num}</span>
+                        <h3>{item.title}</h3>
+                        <p>{item.desc}</p>
+                        <span className="hcard__meta">{item.meta}</span>
+                      </article>
+                      {idx < WHY_EMPAY.length - 1 && (
+                        <span className="hcard-operator" aria-hidden="true">
+                          +
+                        </span>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           </section>
-          </>
-          )}
 
           {/* =====================================================
-              S6: OUR PRESTIGIOUS CLIENTS & ECOSYSTEM (Redesigned FinTech Bento)
+              S6: INDUSTRIES WE SUPPORT (Bento Ecosystem)
               ===================================================== */}
-          {(showAll || currentRoute === "/clients") && (
           <section className="proof-section" id="portfolio" data-theme-trigger="dark">
             <div className="container proof-section__inner">
               <div className="proof-center" id="proof-center">
-                <span className="pill-eyebrow">OUR PRESTIGIOUS CLIENTS</span>
+                <span className="pill-eyebrow">INDUSTRIES WE SUPPORT</span>
                 <h2
                   className="editorial-h2"
                   data-split="lines"
-                  aria-label="Helping our clients become and stay industry pioneers."
+                  aria-label="Technology for the Businesses Behind Every Transaction."
                 >
                   <SplitText
                     mode="lines"
-                    text="Helping our clients become and stay"
-                    accentText="industry pioneers."
+                    text="Technology for the Businesses"
+                    accentText="Behind Every Transaction."
                   />
                 </h2>
                 <p className="clients-lead">
-                  Empay powers high-throughput transaction switching, card issuance, and multi-scheme reconciliation infrastructure for leading banks, payment networks, and fintech enterprises worldwide.
+                  The financial services industry connects banks, financial institutions, payment providers and businesses through an increasingly integrated payment ecosystem. Different organisations have different responsibilities, but they share a common requirement: dependable technology for managing financial operations.
                 </p>
                 <div className="clients-cta">
                   <a
                     href="#footer"
                     className="pill-btn pill-btn--orange scribble-host"
                     data-magnetic
-                    data-cursor="CONNECT"
+                    data-cursor="INDUSTRIES"
                     onClick={(e) => {
                       e.preventDefault();
                       scrollToSection("#footer");
@@ -2070,102 +2008,40 @@ export function App() {
                         <path pathLength={1} d="M-4,22 C18,6 32,38 56,18 C80,-2 96,40 124,18 C136,8 144,28 154,20" />
                       </svg>
                     </span>
-                    <span className="pill-btn__content">Business Enquiries ↗</span>
+                    <span className="pill-btn__content">Explore the Industries We Serve ↗</span>
                   </a>
                 </div>
               </div>
 
-              {/* Bento Client Ecosystem Grid */}
+              {/* Bento Industries Ecosystem Grid */}
               <div className="clients-bento">
-                {/* Card 1: Banking */}
-                <div className="clients-card">
-                  <div className="clients-card__header">
-                    <div className="clients-card__icon clients-card__icon--orange">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M3 21h18M3 10h18M5 10v11M19 10v11M9 10v11M15 10v11M12 3l9 7H3l9-7z" />
-                      </svg>
+                {INDUSTRIES_WE_SUPPORT.map((ind, idx) => {
+                  const iconColors = [
+                    "clients-card__icon--orange",
+                    "clients-card__icon--blue",
+                    "clients-card__icon--cyan",
+                    "clients-card__icon--emerald",
+                  ];
+                  return (
+                    <div className="clients-card" key={ind.title}>
+                      <div className="clients-card__header">
+                        <div className={`clients-card__icon ${iconColors[idx % iconColors.length]}`}>
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M3 21h18M3 10h18M5 10v11M19 10v11M9 10v11M15 10v11M12 3l9 7H3l9-7z" />
+                          </svg>
+                        </div>
+                        <span className="clients-card__badge">{ind.badge}</span>
+                      </div>
+                      <h3 className="clients-card__title">{ind.title}</h3>
+                      <p className="clients-card__desc">{ind.desc}</p>
+                      <div className="clients-card__tags">
+                        {ind.tags.map((tag) => (
+                          <span key={tag}>{tag}</span>
+                        ))}
+                      </div>
                     </div>
-                    <span className="clients-card__badge">FINANCIAL INSTITUTIONS</span>
-                  </div>
-                  <h3 className="clients-card__title">Issuer &amp; Acquirer Banks</h3>
-                  <p className="clients-card__desc">
-                    Complete lifecycle issuance, ATM/POS authorization switching, and multi-institution transaction routing with ISO 8583 standards.
-                  </p>
-                  <div className="clients-card__tags">
-                    <span>Issuer Banks</span>
-                    <span>Acquirer Banks</span>
-                    <span>Core Banking Switch</span>
-                  </div>
-                </div>
-
-                {/* Card 2: Schemes */}
-                <div className="clients-card">
-                  <div className="clients-card__header">
-                    <div className="clients-card__icon clients-card__icon--blue">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="2" y="5" width="20" height="14" rx="2" />
-                        <line x1="2" y1="10" x2="22" y2="10" />
-                      </svg>
-                    </div>
-                    <span className="clients-card__badge">PAYMENT NETWORKS</span>
-                  </div>
-                  <h3 className="clients-card__title">Card Networks &amp; Schemes</h3>
-                  <p className="clients-card__desc">
-                    Certified direct interfaces, automated interchange calculation, clearing file processing, and multi-scheme dispute resolution.
-                  </p>
-                  <div className="clients-card__tags">
-                    <span>RuPay</span>
-                    <span>Visa</span>
-                    <span>Mastercard</span>
-                    <span>Amex</span>
-                  </div>
-                </div>
-
-                {/* Card 3: Acquiring & Gateways */}
-                <div className="clients-card">
-                  <div className="clients-card__header">
-                    <div className="clients-card__icon clients-card__icon--cyan">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="4" y="2" width="16" height="20" rx="2" />
-                        <line x1="8" y1="6" x2="16" y2="6" />
-                        <line x1="16" y1="14" x2="16" y2="18" />
-                        <path d="M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01" />
-                      </svg>
-                    </div>
-                    <span className="clients-card__badge">ACQUIRING CHANNELS</span>
-                  </div>
-                  <h3 className="clients-card__title">POS &amp; Payment Gateways</h3>
-                  <p className="clients-card__desc">
-                    High-throughput terminal fleet management, Internet Payment Gateways (IPG), merchant onboarding, and automated MDR billing.
-                  </p>
-                  <div className="clients-card__tags">
-                    <span>POS Terminals</span>
-                    <span>IPG Gateways</span>
-                    <span>Service Providers</span>
-                  </div>
-                </div>
-
-                {/* Card 4: Trust & Heritage */}
-                <div className="clients-card">
-                  <div className="clients-card__header">
-                    <div className="clients-card__icon clients-card__icon--emerald">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                        <polyline points="9 12 11 14 15 10" />
-                      </svg>
-                    </div>
-                    <span className="clients-card__badge">CERTIFIED INTEGRITY</span>
-                  </div>
-                  <h3 className="clients-card__title">PA-DSS &amp; Proven Heritage</h3>
-                  <p className="clients-card__desc">
-                    Globally certified bank-grade data security compliance with an unbroken 16+ year operational track record across financial markets.
-                  </p>
-                  <div className="clients-card__tags">
-                    <span>PA-DSS Level 1</span>
-                    <span>Est. 2008</span>
-                    <span>99.999% SLA</span>
-                  </div>
-                </div>
+                  );
+                })}
               </div>
 
               {/* Marquee Ticker Trust Bar */}
@@ -2216,12 +2092,10 @@ export function App() {
               </div>
             </div>
           </section>
-          )}
 
           {/* =====================================================
               S6.5: PARTNERS & CLIENTS (Reference White Card Banner Layout)
               ===================================================== */}
-          {(showAll || currentRoute === "/clients" || currentRoute === "/partners") && (
           <section className="partners-section" id="partners" data-theme-trigger="dark">
             <div className="container partners-inner">
               <div className="client-banner-card">
@@ -2268,12 +2142,10 @@ export function App() {
               </div>
             </div>
           </section>
-          )}
 
           {/* =====================================================
               S7: UNIFIED ARCHITECTURE (Clean background, NO dot grid)
               ===================================================== */}
-          {(showAll || currentRoute === "/services") && (
           <section className="arch-section" id="architecture" data-theme-trigger="dark">
             <div className="arch-section__sticky">
               <div className="container arch-section__inner">
@@ -2371,12 +2243,10 @@ export function App() {
               </div>
             </div>
           </section>
-          )}
 
           {/* =====================================================
               S8: METRICS MARQUEE & CAREERS ACCORDION (Clean, NO dot grid)
               ===================================================== */}
-          {(showAll || currentRoute === "/careers") && (
           <section className="metrics-faq-section" id="career" data-theme-trigger="dark">
             <div className="metrics-marquee" aria-label="Empay key highlights">
               <div className="metrics-marquee__track">
@@ -2429,17 +2299,34 @@ export function App() {
                 <h2
                   className="section-h2"
                   data-split="chars"
-                  aria-label="Explore Amazing Career Possibilities with Empay"
+                  aria-label="Grow With Technology. Build With Purpose."
                 >
-                  <SplitText mode="chars" text="Explore Amazing Career Possibilities with Empay" />
+                  <SplitText mode="chars" text="Grow With Technology. Build With Purpose." />
                 </h2>
                 <p className="section-lead" style={{ marginTop: "1rem" }}>
-                  Location: Lulu IT Twin Tower, SmartCity, Kochi · Work Mode: Work From Office (Mandatory). Share your updated resume at{" "}
-                  <a href="mailto:hr@empaysoft.com" style={{ color: "var(--orange)", fontWeight: 600 }}>
-                    hr@empaysoft.com
-                  </a>
-                  .
+                  At Empay, we believe that people are an important part of every technology journey. We welcome individuals who are curious, willing to learn and interested in building solutions that make a difference in the financial technology space. Whether you are beginning your career or bringing years of professional experience, we encourage you to explore opportunities with our team.
                 </p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", marginTop: "1.5rem" }}>
+                  <a
+                    href="#career-list"
+                    className="pill-btn pill-btn--orange scribble-host"
+                    data-magnetic
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection("#career-list");
+                    }}
+                  >
+                    <span className="pill-btn__content">View Open Positions ↓</span>
+                  </a>
+                  <a
+                    href="mailto:hr@empaysoft.com"
+                    className="ghost-pill-btn"
+                    style={{ color: "#ffffff", borderColor: "rgba(255,255,255,0.28)" }}
+                    data-magnetic
+                  >
+                    <span>Send Your Resume ↗</span>
+                  </a>
+                </div>
               </div>
 
               <div className="faq-list" id="career-list">
@@ -2504,17 +2391,10 @@ export function App() {
               </div>
             </div>
           </section>
-          )}
-
-          {currentRoute === "/about" && <AboutHeritageExtra />}
-          {currentRoute === "/services" && <ServicesMethodologyExtra />}
-          {currentRoute === "/products" && <ProductsComparisonExtra />}
-          {currentRoute === "/partners" && <PartnersStandardsExtra />}
-          {currentRoute === "/careers" && <CareersCultureExtra />}
         </main>
 
         {/* =====================================================
-            S9: FOOTER BENTO (Connect, Quick Links & Services)
+            S9: FINAL CALL TO ACTION & CONTACT US
             ===================================================== */}
         <footer className="site-footer" id="footer" data-theme-trigger="dark">
           <div className="container">
@@ -2524,22 +2404,36 @@ export function App() {
                   <span className="status-dot" />
                   <span>Empay Software Solutions Private Limited</span>
                 </div>
-                <h3>Cutting-edge solutions for electronic &amp; mobile payments.</h3>
+                <h3>Let&apos;s Build Better Financial Technology Together.</h3>
                 <p>
-                  Our goal is to help our clients become and stay industry leaders by offering ground-breaking and practical solutions in the transaction processing and payment services sectors.
+                  Every business has its own financial technology requirements. Let&apos;s understand yours. Whether you are looking for payment solutions, transaction management technology or a reliable technology partner, Empay is ready to start the conversation.
                 </p>
-                <div className="footer-compliance">
-                  <span>EST. 2008</span>
-                  <span>PA-DSS CERTIFIED</span>
-                  <span>KOCHI SEZ</span>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", marginTop: "0.5rem" }}>
+                  <a
+                    href="#demo-form"
+                    className="pill-btn pill-btn--orange pill-btn--sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById("demo-name")?.focus();
+                    }}
+                  >
+                    <span className="pill-btn__content">Talk to Our Team ↗</span>
+                  </a>
+                  <a
+                    href="mailto:solutions@empaysoft.com"
+                    className="ghost-pill-btn"
+                    style={{ color: "#ffffff", borderColor: "rgba(255,255,255,0.28)", padding: "0.55rem 1.15rem", fontSize: "0.86rem" }}
+                  >
+                    <span>Contact Us ↗</span>
+                  </a>
                 </div>
               </div>
 
               <div className="footer-card footer-card--channels">
-                <a href="tel:04844865189" className="channel-row">
+                <a href="tel:9037756027" className="channel-row">
                   <div>
-                    <span className="eyebrow">CONTACT NO · MOBILE: 9037756027</span>
-                    <strong>0484 486 5189</strong>
+                    <span className="eyebrow">PHONE</span>
+                    <strong>9037756027</strong>
                   </div>
                   <span className="channel-row__arrow" aria-hidden="true">
                     →
@@ -2547,17 +2441,17 @@ export function App() {
                 </a>
                 <a href="mailto:solutions@empaysoft.com" className="channel-row">
                   <div>
-                    <span className="eyebrow">BUSINESS ENQUIRIES</span>
+                    <span className="eyebrow">SOLUTIONS &amp; BUSINESS</span>
                     <strong>solutions@empaysoft.com</strong>
                   </div>
                   <span className="channel-row__arrow" aria-hidden="true">
                     →
                   </span>
                 </a>
-                <a href="mailto:hr@empaysoft.com" className="channel-row">
+                <a href="mailto:info@empaysoft.com" className="channel-row">
                   <div>
-                    <span className="eyebrow">HR ENQUIRIES</span>
-                    <strong>hr@empaysoft.com</strong>
+                    <span className="eyebrow">GENERAL ENQUIRIES</span>
+                    <strong>info@empaysoft.com</strong>
                   </div>
                   <span className="channel-row__arrow" aria-hidden="true">
                     →
@@ -2565,19 +2459,22 @@ export function App() {
                 </a>
                 <div className="channel-row">
                   <div>
-                    <span className="eyebrow">LOCATION</span>
+                    <span className="eyebrow">ADDRESS</span>
                     <strong style={{ fontSize: "0.92rem", lineHeight: 1.35 }}>
-                      Lulu IT Twin Tower SmartCity (Kochi) SEZ, Infopark Rd, P.O, Kakkanad, Kochi, Kerala 682042
+                      Empay Software Solutions Private Limited, Lulu IT Twin Tower, SmartCity, Kochi, Kerala, India.
                     </strong>
                   </div>
                 </div>
               </div>
 
               <div className="footer-card footer-card--cta">
-                <span className="eyebrow eyebrow--dark">BUSINESS ENQUIRY</span>
-                <h3>Select a solution</h3>
-                <div className="footer-pills" id="footer-pills">
-                  {["MARS", "ReconPlus", "Consulting", "Support"].map((pill) => (
+                <span className="eyebrow eyebrow--dark">CONTACT US</span>
+                <h3>Have a Requirement? Let&apos;s Talk.</h3>
+                <p style={{ color: "rgba(10, 22, 40, 0.8)", fontSize: "0.9rem", lineHeight: 1.5, margin: "0 0 0.5rem" }}>
+                  Share your requirements with us, and our team will get in touch.
+                </p>
+                <div className="footer-pills" id="footer-pills" aria-label="Area of Interest">
+                  {["ReconPlus", "MARS", "Prevega", "Software Development", "System Integration", "Support"].map((pill) => (
                     <button
                       type="button"
                       key={pill}
@@ -2596,8 +2493,17 @@ export function App() {
                       type="text"
                       autoComplete="name"
                       required
-                      placeholder="Your Name"
+                      placeholder="Full Name"
                       aria-label="Full Name"
+                    />
+                    <input
+                      id="demo-company"
+                      name="company"
+                      type="text"
+                      autoComplete="organization"
+                      required
+                      placeholder="Company Name"
+                      aria-label="Company Name"
                     />
                     <input
                       id="demo-email"
@@ -2605,8 +2511,8 @@ export function App() {
                       type="email"
                       autoComplete="email"
                       required
-                      placeholder="Work Email (you@company.com)"
-                      aria-label="Work email address"
+                      placeholder="Email Address"
+                      aria-label="Email Address"
                     />
                     <input
                       id="demo-phone"
@@ -2614,8 +2520,15 @@ export function App() {
                       type="tel"
                       autoComplete="tel"
                       required
-                      placeholder="Mobile / Contact Number"
-                      aria-label="Mobile Number"
+                      placeholder="Contact Number"
+                      aria-label="Contact Number"
+                    />
+                    <textarea
+                      id="demo-message"
+                      name="message"
+                      rows={3}
+                      placeholder="Your Message"
+                      aria-label="Your Message"
                     />
                   </div>
                   <button type="submit" className="pill-btn pill-btn--navy footer-form__submit" data-magnetic>
@@ -2633,13 +2546,13 @@ export function App() {
                   <span className="eyebrow">QUICK LINKS</span>
                   {[
                     { label: "Home", href: "#hero" },
-                    { label: "About", href: "#about" },
-                    { label: "Services", href: "#service" },
-                    { label: "Products", href: "#pricing" },
-                    { label: "Clients", href: "#portfolio" },
+                    { label: "About Us", href: "#technology" },
+                    { label: "Our Products", href: "#pricing" },
+                    { label: "Our Services", href: "#service" },
+                    { label: "Industries", href: "#portfolio" },
                     { label: "Partners", href: "#partners" },
                     { label: "Careers", href: "#career" },
-                    { label: "Contact", href: "#footer" },
+                    { label: "Contact Us", href: "#footer" },
                   ].map((item) => (
                     <a
                       key={item.label}
@@ -2656,9 +2569,9 @@ export function App() {
                   ))}
                 </div>
                 <div>
-                  <span className="eyebrow">SERVICES</span>
+                  <span className="eyebrow">EXPERTISE &amp; SERVICES</span>
                   <div className="footer-services-grid">
-                    {WHAT_WE_OFFER.map((srv) => (
+                    {[...OUR_EXPERTISE, ...OUR_SERVICES].map((srv) => (
                       <a
                         key={srv.name}
                         href="#service"
@@ -2682,7 +2595,7 @@ export function App() {
             </div>
 
             <div className="footer-legal">
-              <span>2025 © Empay Software Solutions. All Rights Reserved.</span>
+              <span>Privacy Policy | Terms &amp; Conditions · Copyright © 2026 Empay Software Solutions Private Limited. All Rights Reserved.</span>
               <button
                 type="button"
                 className="back-top-link"

@@ -892,50 +892,6 @@ html.menu-open .stacked-menu__card {
   transition: background-color 0.8s var(--ease-editorial);
 }
 
-/* Dedicated Inner Page Hero */
-.page-hero {
-  position: relative;
-  min-height: 48vh;
-  padding: calc(var(--header-h) + clamp(2.5rem, 4.5vw, 4rem)) 0 clamp(2.5rem, 4vw, 3.5rem);
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  transition: background-color 0.8s var(--ease-editorial);
-}
-
-.page-hero__container {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 100%;
-  padding-inline: clamp(1rem, 2vw, 2.5rem);
-}
-
-.page-hero__centerpiece {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  max-width: 1100px;
-  margin-block: auto;
-  padding-block: clamp(1rem, 2vw, 2rem);
-  gap: clamp(1.25rem, 2vw, 2rem);
-}
-
-.page-hero__centerpiece .hero__cinematic-title {
-  font-size: clamp(2.2rem, 5.2vw, 4.2rem);
-  line-height: 1.05;
-}
-
-.page-hero__cta-cluster {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  flex-wrap: wrap;
-  margin-top: 0.5rem;
-}
-
 .hero__container {
   position: relative;
   z-index: 2;
@@ -1114,7 +1070,7 @@ html.menu-open .stacked-menu__card {
   -webkit-backdrop-filter: blur(20px);
   box-shadow: 0 16px 44px rgba(10, 22, 40, 0.08), 0 2px 8px rgba(10, 22, 40, 0.04);
   gap: 8px;
-  width: min(1000px, 100%);
+  width: min(1140px, 100%);
   margin-top: clamp(1.25rem, 2.5vw, 2.25rem);
 }
 
@@ -2731,15 +2687,6 @@ html.menu-open .stacked-menu__card {
   padding-bottom: clamp(5rem, 10vw, 8.5rem);
 }
 
-.is-subpage > .metrics-faq-section:first-child,
-.is-subpage > .partners-section:first-child {
-  padding-top: calc(var(--header-h) + clamp(3rem, 6vw, 5rem));
-}
-
-.is-contact-page .site-footer {
-  padding-top: calc(var(--header-h) + clamp(3rem, 6vw, 5rem));
-}
-
 .metrics-marquee {
   overflow: hidden;
   border-block: 1px solid rgba(255, 255, 255, 0.1);
@@ -3059,7 +3006,8 @@ html.menu-open .stacked-menu__card {
   gap: 0.55rem;
 }
 
-.footer-form input {
+.footer-form input,
+.footer-form textarea {
   width: 100%;
   height: 44px;
   padding: 0 1.15rem;
@@ -3073,13 +3021,23 @@ html.menu-open .stacked-menu__card {
   transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.footer-form input:focus {
+.footer-form textarea {
+  height: auto;
+  min-height: 76px;
+  padding: 0.75rem 1.15rem;
+  border-radius: 18px;
+  resize: vertical;
+}
+
+.footer-form input:focus,
+.footer-form textarea:focus {
   background: #ffffff;
   border-color: var(--navy);
   box-shadow: 0 0 0 3px rgba(10, 22, 40, 0.16);
 }
 
-.footer-form input::placeholder {
+.footer-form input::placeholder,
+.footer-form textarea::placeholder {
   color: rgba(10, 22, 40, 0.55);
 }
 

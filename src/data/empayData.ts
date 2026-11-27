@@ -62,19 +62,129 @@ export const HERO_SLIDES: HeroProductSlide[] = [
 
 export const CORE_PILLARS = [
   {
-    title: "Architecture & Consulting.",
-    subtitle: "Designing your payment system.",
-    body: "As a mission-critical part of your business, your payments system should be as streamlined and efficient as possible while being robust, flexible and low cost.",
+    title: "Our Vision",
+    subtitle: "Trusted Financial Technology Partner",
+    body: "To become a trusted name in financial technology by developing meaningful software solutions that support the changing needs of the financial services industry.",
   },
   {
-    title: "Services & Support.",
-    subtitle: "Supporting and enhancing your payment system.",
-    body: "With a wealth of industry experience and payment systems knowledge, we are able to provide a broad range of support and services for your payment system.",
+    title: "Our Mission",
+    subtitle: "Domain Knowledge Meets Technology",
+    body: "To combine financial domain knowledge and technology expertise to create practical solutions that simplify operations and support business growth.",
+  },
+];
+
+export const WHAT_DRIVES_US = [
+  "Understanding before development.",
+  "Practical solutions over unnecessary complexity.",
+  "Continuous improvement in technology.",
+  "Commitment to customer requirements.",
+  "Building lasting professional relationships.",
+];
+
+export const OUR_EXPERTISE = [
+  {
+    name: "Payment Processing",
+    desc: "Managing electronic payment transactions through technology that supports smooth and organised payment operations.",
   },
   {
-    title: "Software & Applications.",
-    subtitle: "Designing and building for your payments platform.",
-    body: "The rapid advance in technology has brought innovation and fresh thinking in the payments industry.",
+    name: "Transaction Reconciliation",
+    desc: "Bringing transaction records together, identifying differences and helping financial institutions maintain accurate financial data.",
+  },
+  {
+    name: "Merchant Acquiring",
+    desc: "Supporting the technology requirements behind merchant onboarding, transaction management and acquiring operations.",
+  },
+  {
+    name: "Clearing & Settlement",
+    desc: "Helping manage the processes involved in clearing transactions and settling financial obligations.",
+  },
+  {
+    name: "Electronic Fund Transfers",
+    desc: "Enabling electronic fund transfer operations through transaction routing and connectivity between financial systems.",
+  },
+];
+
+export const OUR_SERVICES = [
+  {
+    name: "Software Development",
+    desc: "Turning business requirements into practical software solutions through structured development and technical expertise.",
+    detail: "We develop software solutions based on business requirements, functional expectations and the technical needs of financial institutions.",
+  },
+  {
+    name: "System Integration & Implementation",
+    desc: "Helping organisations bring technology solutions into their existing systems and operational environments.",
+    detail: "We support the integration and implementation of software solutions within existing technology environments, helping organisations connect their systems and processes.",
+  },
+  {
+    name: "Technical Support & Maintenance",
+    desc: "Supporting software systems through technical assistance, maintenance and ongoing issue resolution.",
+    detail: "We provide technical assistance and maintenance support to help organisations address software-related requirements and maintain their systems.",
+  },
+];
+
+export const WHY_EMPAY = [
+  {
+    num: "01",
+    title: "Experience Since 2008",
+    desc: "More than a decade of experience in developing technology for the financial services and electronic payments industry.",
+    meta: "ESTABLISHED 2008",
+  },
+  {
+    num: "02",
+    title: "Understanding Financial Operations",
+    desc: "Knowledge of the processes behind card payments, transaction reconciliation, merchant acquiring and fund transfers.",
+    meta: "DOMAIN KNOWLEDGE",
+  },
+  {
+    num: "03",
+    title: "Solutions Built Around Business Needs",
+    desc: "A practical approach to understanding requirements and developing solutions that address specific operational challenges.",
+    meta: "PRACTICAL DELIVERY",
+  },
+  {
+    num: "04",
+    title: "Flexible Technology Capabilities",
+    desc: "Configurable product capabilities to accommodate different business processes and transaction requirements.",
+    meta: "CONFIGURABLE SUITE",
+  },
+  {
+    num: "05",
+    title: "Technical & Domain Expertise",
+    desc: "Bringing together software development capabilities and financial industry knowledge.",
+    meta: "ENGINEERING + FINANCE",
+  },
+  {
+    num: "06",
+    title: "Long-Term Customer Relationships",
+    desc: "Building relationships through an understanding of customer requirements and a commitment to providing relevant support.",
+    meta: "PARTNERSHIP",
+  },
+];
+
+export const INDUSTRIES_WE_SUPPORT = [
+  {
+    badge: "BANKING",
+    title: "Banks",
+    desc: "Technology support for issuing and acquiring operations, card transaction management, reconciliation and payment processing.",
+    tags: ["Issuing & Acquiring", "Card Management", "Reconciliation"],
+  },
+  {
+    badge: "NBFC",
+    title: "Non-Banking Financial Companies",
+    desc: "Software solutions addressing financial operations and transaction management requirements within the NBFC environment.",
+    tags: ["Financial Operations", "Transaction Management", "NBFC"],
+  },
+  {
+    badge: "PSP",
+    title: "Payment Service Providers",
+    desc: "Technology capabilities for transaction processing, switching, reconciliation and settlement operations.",
+    tags: ["Processing", "Switching", "Settlement"],
+  },
+  {
+    badge: "FINTECH & TPPSP",
+    title: "Third-Party Payment Service Providers",
+    desc: "Solutions that support the management of payment-related processes, transaction flows, and financial operations.",
+    tags: ["Payment Flows", "FinTech Operations", "Connectivity"],
   },
 ];
 
